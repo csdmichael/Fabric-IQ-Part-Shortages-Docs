@@ -1,0 +1,15 @@
+Create a readme file with TOC to cover the following:
+
+- Briefly describe business problem for supply shortages and display diagram from Business-Problem folder
+    Add this video link: https://1drv.ms/v/c/4673b287399127d4/IQCfxQCkWM6sRIao0V0GmvgcAZo30myNJH4qXYodI0OjS9U?e=YVzQHC
+- Briefly describe architecture and display architecture diagram
+    Add this video link: https://1drv.ms/v/c/4673b287399127d4/IQA4wuZ1X8G4T5TVD6xOMXh3AXnXwaDwD0zKlSOM6zXS3lY?e=uIOJry
+- Describe Fabric IQ Ontology and show screenshot for ontology from screenshots folder
+    Add this video link: https://1drv.ms/v/c/4673b287399127d4/IQDdRsI2DMAAR7c93slkDaq3ATl-gir-r_6HTpdtNzdMHtY?e=u1tZsM
+- Describe Cost benefit analysis and summarize high level numbers then reference the business_value.md
+- Describe UI and display screenshots under docs / screenshots. Categorize UI in 3 main zones:
+    - Business Operations
+    - Admin Operations
+    - Documentation and Architecture
+- Describe github repo for source code and mention it is private and contact me for access requests.
+    Repo Url: https://github.com/csdmichael/Fabric-IQ-Ontology-Parts-Shortages
