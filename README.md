@@ -14,7 +14,8 @@ An AI-powered shortage intelligence solution built on Microsoft Fabric, Fabric I
    - [5.1 Business Operations](#51-business-operations)
    - [5.2 Admin / IT Operations](#52-admin--it-operations)
    - [5.3 System Design & Documentation](#53-system-design--documentation)
-6. [Source Code Repository](#6-source-code-repository)
+6. [Deployment Guide](#6-deployment-guide)
+7. [Source Code Repository](#7-source-code-repository)
 
 ---
 
@@ -265,7 +266,15 @@ In‑app architecture, dataflow, ML algorithm, table catalog, and ontology‑exp
 
 ---
 
-## 6. Source Code Repository
+## 6. Deployment Guide
+
+Fabric IQ deploys into a customer tenant via a short, table‑driven runbook: three manual Azure resources (Resource Group, Fabric capacity, Foundry account) plus a one‑time Entra app‑registration handoff, followed by five idempotent PowerShell scripts that provision, wire, and verify everything else from a single `azure.config.json` source of truth. End‑to‑end setup typically runs ~30 minutes when Subscription Owner, Entra admin, and Fabric admin roles are held by the same person.
+
+📄 Full prerequisites, role matrix, manual steps, automated pipeline, and troubleshooting: [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
+
+---
+
+## 7. Source Code Repository
 
 The source code lives in a **private** GitHub repository:
 
