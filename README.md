@@ -358,7 +358,18 @@ Entra ID SSO is already implemented. Extend it with **App Registration manifest*
 - Integrate SRE Agent findings into the Admin / IT Operations console alongside model‑performance dashboards so platform health and ML health are observed in one pane.
 - Pair with **Azure Monitor Workbooks** and **Action Groups** for paging, and feed post‑incident learnings back into the deployment runbook in [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md).
 
-### 9.6 Other Candidate Extensions
+### 9.6 MLOps — Azure Machine Learning for Model Lifecycle & Versioning
+
+Today the Shortage Risk Calculator and Demand Forecaster are trained and scored inside Fabric notebooks. Promoting them to **Azure Machine Learning (Azure ML)** would add the MLOps rigor needed for an enterprise rollout:
+
+- **Model registry & versioning** — register every trained model in the **Azure ML Model Registry** with immutable versions, lineage back to the training run, dataset snapshot, and git commit; promote across `dev` → `staging` → `production` stages with approval gates.
+- **Experiment tracking** — use **MLflow** (native in Azure ML) to log parameters, metrics, artifacts, and confusion matrices for every training run so model improvements are auditable and reproducible.
+- **Automated training pipelines** — define **Azure ML Pipelines** (or **Prompt Flow** for LLM components) triggered by new OneLake data, code changes, or drift signals from the Admin console, replacing ad‑hoc notebook reruns.
+- **Managed online & batch endpoints** — deploy registered models as **Azure ML managed endpoints** with blue/green and canary rollout, autoscale, and built‑in authentication, then call them from the Fabric pipelines and the agents instead of in‑notebook scoring.
+- **Responsible AI & model monitoring** — enable the **Responsible AI dashboard** (fairness, explainability, error analysis) at registration time and **Azure ML data‑drift / model‑monitoring** jobs in production, feeding drift and quality alerts into the Admin / IT Operations dashboard next to Defender and SRE Agent signals.
+- **CI/CD with GitHub Actions / Azure DevOps** — wire the registry, pipelines, and endpoints into a GitOps workflow so model promotion follows the same review, test, and rollback discipline as application code.
+
+### 9.7 Other Candidate Extensions
 
 - **Continuous evaluation** of all Foundry agents (groundedness, relevance, safety) on a scheduled batch, with results trended in the Admin console.
 - **Multi‑tenant / multi‑program** isolation using Fabric workspace‑per‑program plus APIM products keyed by `program` claim.
