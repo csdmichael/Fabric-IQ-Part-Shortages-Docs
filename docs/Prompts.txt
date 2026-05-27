@@ -20,3 +20,4 @@ Create a readme file with TOC to cover the following:
         Add this video link: https://1drv.ms/v/c/4673b287399127d4/IQD11R0OHtP0Rqt378p3wPFzATjISyvAAFFNcJzePjdhjhw?e=K6G1qC
 - Describe github repo for source code and mention it is private and contact me for access requests.
     Repo Url: https://github.com/csdmichael/Fabric-IQ-Ontology-Parts-Shortages
+- Ideas for extending this POC (leveraging Defender, APIM for Token limits / cost tracking / Centralized governance, Microsoft Preview for data labeling and row level security, Entra ID integration is already implemented - leverage App manifest for Cost Center tracking, other meta data, leverage SRE Agent to monitor this App)

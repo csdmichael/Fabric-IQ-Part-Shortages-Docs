@@ -17,6 +17,7 @@ An AI-powered shortage intelligence solution built on Microsoft Fabric, Fabric I
    - [6.3 System Design & Documentation](#63-system-design--documentation)
 7. [Deployment Guide](#7-deployment-guide)
 8. [Source Code Repository](#8-source-code-repository)
+9. [Future Ideas — Extending the POC](#9-future-ideas--extending-the-poc)
 
 ---
 
@@ -43,6 +44,10 @@ The solution is built on **Microsoft Fabric** (OneLake, Lakehouses, Notebooks, D
 ## 3. Fabric IQ Ontology
 
 The **Fabric IQ Ontology** provides a semantic layer over OneLake tables, modeling supply‑chain concepts such as *Material*, *Plant*, *Shortage Event*, *Machine Configuration*, and the relationships between them. This lets both humans and AI agents reason over the data using business concepts instead of raw tables, and enables the Fabric Data Agent to answer natural‑language questions grounded in governed data.
+
+**Ontology Overview** — End‑to‑end map of the Parts Shortages ontology: entities (master, bridge, and operational/event), their relationships, and the derived properties computed by the ontology that power downstream reasoning (severity bands, risk flags, cover‑days, supplier scores, PO lateness).
+
+![Parts Shortages Ontology Overview](docs/Screenshots/Fabric%20IQ%20Ontology/Ontology-Overview.png)
 
 **Machine Configuration Header** — The top‑level *MachineConfigHeader* entity that represents a tool/system configuration. It is the anchor object linking bills of materials, plants, and downstream shortage events back to a specific machine build.
 
@@ -304,3 +309,56 @@ The source code lives in a **private** GitHub repository:
 🔒 **[github.com/csdmichael/Fabric-IQ-Ontology-Parts-Shortages](https://github.com/csdmichael/Fabric-IQ-Ontology-Parts-Shortages)**
 
 For access, please contact the repository owner ([@csdmichael](https://github.com/csdmichael)) with your GitHub username and a brief description of your use case.
+
+---
+
+## 9. Future Ideas — Extending the POC
+
+The current solution is a working end‑to‑end POC. The following enhancements would harden it for broad enterprise rollout across security, governance, cost control, data protection, identity, and operations.
+
+### 9.1 Security — Microsoft Defender for Cloud & Defender for AI
+
+- Onboard the Fabric capacity, Foundry account, Storage, Key Vault, and App Service to **Microsoft Defender for Cloud** for continuous posture management (CSPM) and workload protection (CWPP).
+- Enable **Defender for AI Workloads** on the Foundry account to detect prompt‑injection, data‑exfiltration, jailbreak, and wallet‑abuse patterns against the Operations, Recommendation, and Orchestration agents.
+- Stream Defender alerts into a central Log Analytics workspace and surface them on the Admin / IT Operations dashboard alongside ML model health.
+- Apply **Azure Policy** initiatives (Microsoft Cloud Security Benchmark, NIST 800‑53) at the Resource Group scope so every future deployment inherits the same guardrails.
+
+### 9.2 AI Gateway — Azure API Management in Front of Foundry Agents
+
+Put **Azure API Management (APIM) as an AI Gateway** between the web app and the Foundry agents / model endpoints to centralize governance:
+
+- **Token limits & quotas** per user, per agent, and per cost center using the `llm-token-limit` / `azure-openai-token-limit` policies.
+- **Cost tracking & chargeback** via `llm-emit-token-metric` / `azure-openai-emit-token-metric`, with prompt and completion tokens dimensioned by subscription, user, and cost center, then visualized in Azure Monitor workbooks.
+- **Semantic caching** (`llm-semantic-cache-*`) to deflect repeat planner questions (e.g. *"show critical shortages at Plant 4"*) and cut Foundry inference cost.
+- **Centralized governance** — single ingress for authN/Z, throttling, content safety, jailbreak detection, audit logging, and circuit‑breaking across all current and future agents.
+- **Load balancing & failover** across multiple Foundry deployments / regions for resilience during launch‑week traffic spikes.
+
+### 9.3 Data Protection — Microsoft Purview Sensitivity Labels & Row‑Level Security
+
+- Apply **Microsoft Purview** sensitivity labels (e.g., *Confidential — Supply Chain*, *Restricted — Supplier Pricing*) to OneLake tables, Fabric items, and Foundry datasets so classification flows end‑to‑end.
+- Enable **Row‑Level Security (RLS)** and **Object‑Level Security (OLS)** on the gold Lakehouse / semantic model so a planner only sees shortages for their plant(s) or program(s), and supplier‑sensitive columns (cost, contract terms) are masked for non‑sourcing roles.
+- Wire the Fabric Data Agent to respect the caller's Entra identity so natural‑language Q&A inherits the same RLS rules — no bypass via the agent.
+- Use **Purview DLP** policies to prevent labeled data from being copied into unmanaged exports or pasted into external LLMs.
+
+### 9.4 Identity — Extend Entra ID Integration with App Manifest Metadata
+
+Entra ID SSO is already implemented. Extend it with **App Registration manifest** metadata to drive enterprise lifecycle and chargeback:
+
+- Populate **Application** and **Service Principal** custom security attributes (`costCenter`, `businessUnit`, `dataOwner`, `environment`, `program`) so every API/agent call can be attributed to a cost center.
+- Use **optional claims** and **app roles** (`Planner`, `Sourcing`, `Admin`, `Executive`) to drive UI authorization and RLS scoping consistently from a single source of truth.
+- Tag Azure resources (Foundry, APIM, App Service, Storage, Fabric capacity) with the same `costCenter` / `program` values so Azure Cost Management reports line up with Entra app metadata.
+- Enforce **Conditional Access** (compliant device, MFA, named locations) on the app and on the Foundry / APIM endpoints.
+
+### 9.5 Operations — Azure SRE Agent for 24×7 Monitoring
+
+- Onboard the App Service, APIM, Foundry account, and Fabric workloads to the **Azure SRE Agent** for autonomous incident detection, triage, and remediation suggestions.
+- Let the SRE Agent watch Application Insights / Log Analytics signals (latency, 5xx, token‑spend anomalies, ML drift alerts, Defender alerts) and open enriched incidents with probable root cause and suggested runbooks.
+- Integrate SRE Agent findings into the Admin / IT Operations console alongside model‑performance dashboards so platform health and ML health are observed in one pane.
+- Pair with **Azure Monitor Workbooks** and **Action Groups** for paging, and feed post‑incident learnings back into the deployment runbook in [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md).
+
+### 9.6 Other Candidate Extensions
+
+- **Continuous evaluation** of all Foundry agents (groundedness, relevance, safety) on a scheduled batch, with results trended in the Admin console.
+- **Multi‑tenant / multi‑program** isolation using Fabric workspace‑per‑program plus APIM products keyed by `program` claim.
+- **Event‑driven retraining** triggered by drift detected in the Shortage Risk Calculator or Demand Forecaster.
+- **Teams / Copilot Studio** front‑end so planners can chat with the Operations Orchestration Assistant from Microsoft Teams without leaving their workflow.
