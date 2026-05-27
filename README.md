@@ -98,6 +98,8 @@ Baseline workload: **~540,000 shortage events / yr** across **6 launch cycles**,
 
 ## 6. User Interface
 
+**UI URL:** https://fabriciq-shortages-ui-b3.azurewebsites.net
+
 The application is organized into three functional zones:
 
 ### 6.1 Business Operations
