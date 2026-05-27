@@ -47,7 +47,7 @@ The **Fabric IQ Ontology** provides a semantic layer over OneLake tables, modeli
 
 **Ontology Overview** — End‑to‑end map of the Parts Shortages ontology: entities (master, bridge, and operational/event), their relationships, and the derived properties computed by the ontology that power downstream reasoning (severity bands, risk flags, cover‑days, supplier scores, PO lateness).
 
-![Parts Shortages Ontology Overview](docs/Screenshots/Fabric%20IQ%20Ontology/Ontology-Overview.png)
+![Parts Shortages Ontology Overview](docs/Ontology-Overview.png)
 
 **Machine Configuration Header** — The top‑level *MachineConfigHeader* entity that represents a tool/system configuration. It is the anchor object linking bills of materials, plants, and downstream shortage events back to a specific machine build.
 
