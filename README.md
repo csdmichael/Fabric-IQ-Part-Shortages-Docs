@@ -9,13 +9,14 @@ An AI-powered shortage intelligence solution built on Microsoft Fabric, Fabric I
 1. [Business Problem](#1-business-problem)
 2. [Solution Architecture](#2-solution-architecture)
 3. [Fabric IQ Ontology](#3-fabric-iq-ontology)
-4. [Cost / Benefit Analysis](#4-cost--benefit-analysis)
-5. [User Interface](#5-user-interface)
-   - [5.1 Business Operations](#51-business-operations)
-   - [5.2 Admin / IT Operations](#52-admin--it-operations)
-   - [5.3 System Design & Documentation](#53-system-design--documentation)
-6. [Deployment Guide](#6-deployment-guide)
-7. [Source Code Repository](#7-source-code-repository)
+4. [ML Algorithms](#4-ml-algorithms)
+5. [Cost / Benefit Analysis](#5-cost--benefit-analysis)
+6. [User Interface](#6-user-interface)
+   - [6.1 Business Operations](#61-business-operations)
+   - [6.2 Admin / IT Operations](#62-admin--it-operations)
+   - [6.3 System Design & Documentation](#63-system-design--documentation)
+7. [Deployment Guide](#7-deployment-guide)
+8. [Source Code Repository](#8-source-code-repository)
 
 ---
 
@@ -59,7 +60,21 @@ The **Fabric IQ Ontology** provides a semantic layer over OneLake tables, modeli
 
 ---
 
-## 4. Cost / Benefit Analysis
+## 4. ML Algorithms
+
+Three purpose-built ML models — all trained and served from **Microsoft Fabric** on features derived from the Fabric IQ Ontology — power the predictive and prescriptive layer of the solution:
+
+- **Shortage Risk Calculator** — A gradient-boosted classifier that scores every open shortage with the probability of slipping past its required date. Inputs include supplier OTD history, lead-time variance, MRP signal stability, plant load, and machine-configuration criticality. Output is a calibrated risk score used to rank the *Top At-Risk Parts* view and drive proactive triage.
+- **Demand Forecaster** — A time-series model (gradient-boosted regression over engineered lag/seasonality features) that projects net part demand per material/plant across the 8-week launch cycle. Outputs feed the shortage-prediction pipeline and the cross-plant reallocation logic, and are back-tested with MAPE / RMSE / bias trend.
+- **Action Recommender** — A multi-class classifier that, given a scored shortage and the current supply state, recommends the best resolution path (expedite, reallocate from sister plant, substitute, re-plan, escalate). Trained on historical resolutions and continuously refined via the planner accept/reject feedback loop.
+
+All three models are retrained on a scheduled cadence from curated gold-layer tables in OneLake, their outputs are written back as ML output tables, and their live performance (accuracy, precision/recall, MAPE, acceptance rate) is monitored in the Admin / IT Operations dashboards.
+
+🎥 **Walkthrough video:** [ML Algorithms Overview](https://1drv.ms/v/c/4673b287399127d4/IQAqnV510hZFSIfadk20E9nUAcarb-BvMMudFbONGwM5_FM?e=DdzESB)
+
+---
+
+## 5. Cost / Benefit Analysis
 
 The MVP targets a **50% reduction in shortages at week 1**, yielding an estimated **~$20.3M / year** in savings across three independent levers. Sensitivity across a 10%–75% reduction range produces **$4.0M – $30.4M / year**.
 
@@ -76,15 +91,17 @@ Baseline workload: **~540,000 shortage events / yr** across **6 launch cycles**,
 
 ---
 
-## 5. User Interface
+## 6. User Interface
 
 The application is organized into three functional zones:
 
-### 5.1 Business Operations
+### 6.1 Business Operations
 
 Tools used by supply‑chain planners, SBMs, and operations leaders to monitor, predict, and act on shortages.
 
 #### Dashboards and Reports
+
+🎥 **Walkthrough video:** [Business Operations — Reports](https://1drv.ms/v/c/4673b287399127d4/IQC9c-Sd95JwQ5aGxGO59RNuAXNRLlVvdjEi8k2PGcSv5GY?e=5C9hds)
 
 **Navigation menu** — Entry point for all operations dashboards, reports, and drill‑through views.
 
@@ -144,6 +161,8 @@ Tools used by supply‑chain planners, SBMs, and operations leaders to monitor, 
 
 #### AI Assistants
 
+🎥 **Walkthrough video:** [Business Operations — AI Assistants](https://1drv.ms/v/c/4673b287399127d4/IQBvYxrYreY8QrXqWod_Il1TARzApnoJakz_fat9K4zvSm4?e=O1d4Gj)
+
 **Operations Data Assistant — Try** — Natural‑language Q&A over the OneLake ontology (powered by Fabric Data Agent). Planners can ask things like "show me all critical shortages at Plant 4 due this week."
 
 ![Ops Data Assistant - Try](docs/Screenshots/UI/1.%20Business%20Operations/AI%20Assistants/01.a.%20Operations%20Data%20Assistant%20-%20Try.png)
@@ -172,9 +191,11 @@ Tools used by supply‑chain planners, SBMs, and operations leaders to monitor, 
 
 ![Agent Prompt Lab - Try in Chat](docs/Screenshots/UI/1.%20Business%20Operations/AI%20Assistants/04.b.%20Agent%20Prompt%20Lab%20-%20Try%20in%20Chat.png)
 
-### 5.2 Admin / IT Operations
+### 6.2 Admin / IT Operations
 
 Tools used by IT and ML engineers to manage data ingestion, feature engineering, model training, and model performance monitoring.
+
+🎥 **Walkthrough video:** [Admin / IT Operations Overview](https://1drv.ms/v/c/4673b287399127d4/IQBZ6S17GP8HQ5vW3PWkLwFXAQuwbKL1GoCAPt6NtoCIk3g?e=iDK3NZ)
 
 **Admin menu** — Entry point for the data, feature, training, and model‑monitoring tools.
 
@@ -212,9 +233,11 @@ Tools used by IT and ML engineers to manage data ingestion, feature engineering,
 
 ![Predictions and Insights](docs/Screenshots/UI/2.%20Admin%20IT%20Operations/06.%20Predictions%20and%20Insights.png)
 
-### 5.3 System Design & Documentation
+### 6.3 System Design & Documentation
 
 In‑app architecture, dataflow, ML algorithm, table catalog, and ontology‑explorer views for solution discoverability.
+
+🎥 **Walkthrough video:** [System Design & Documentation Overview](https://1drv.ms/v/c/4673b287399127d4/IQD11R0OHtP0Rqt378p3wPFzATjISyvAAFFNcJzePjdhjhw?e=K6G1qC)
 
 **Documentation menu** — Entry point for the in‑app system design and documentation views.
 
@@ -266,7 +289,7 @@ In‑app architecture, dataflow, ML algorithm, table catalog, and ontology‑exp
 
 ---
 
-## 6. Deployment Guide
+## 7. Deployment Guide
 
 Fabric IQ deploys into a customer tenant via a short, table‑driven runbook: three manual Azure resources (Resource Group, Fabric capacity, Foundry account) plus a one‑time Entra app‑registration handoff, followed by five idempotent PowerShell scripts that provision, wire, and verify everything else from a single `azure.config.json` source of truth. End‑to‑end setup typically runs ~30 minutes when Subscription Owner, Entra admin, and Fabric admin roles are held by the same person.
 
@@ -274,7 +297,7 @@ Fabric IQ deploys into a customer tenant via a short, table‑driven runbook: th
 
 ---
 
-## 7. Source Code Repository
+## 8. Source Code Repository
 
 The source code lives in a **private** GitHub repository:
 

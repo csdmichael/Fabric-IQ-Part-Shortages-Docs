@@ -7,9 +7,16 @@ Create a readme file with TOC to cover the following:
 - Describe Fabric IQ Ontology and show screenshot for ontology from screenshots folder
     Add this video link: https://1drv.ms/v/c/4673b287399127d4/IQDdRsI2DMAAR7c93slkDaq3ATl-gir-r_6HTpdtNzdMHtY?e=u1tZsM
 - Describe Cost benefit analysis and summarize high level numbers then reference the business_value.md
+- Describe ML Algorithms after Fabric IQ Ontology
+    Add this video link: https://1drv.ms/v/c/4673b287399127d4/IQAqnV510hZFSIfadk20E9nUAcarb-BvMMudFbONGwM5_FM?e=DdzESB
 - Describe UI and display screenshots under docs / screenshots. Categorize UI in 3 main zones:
     - Business Operations
+        Add these 2 video links: 
+            - Reports: https://1drv.ms/v/c/4673b287399127d4/IQC9c-Sd95JwQ5aGxGO59RNuAXNRLlVvdjEi8k2PGcSv5GY?e=5C9hds
+            - AI Assistants: https://1drv.ms/v/c/4673b287399127d4/IQBvYxrYreY8QrXqWod_Il1TARzApnoJakz_fat9K4zvSm4?e=O1d4Gj
     - Admin Operations
+        Add this video link: https://1drv.ms/v/c/4673b287399127d4/IQBZ6S17GP8HQ5vW3PWkLwFXAQuwbKL1GoCAPt6NtoCIk3g?e=iDK3NZ
     - Documentation and Architecture
+        Add this video link: https://1drv.ms/v/c/4673b287399127d4/IQD11R0OHtP0Rqt378p3wPFzATjISyvAAFFNcJzePjdhjhw?e=K6G1qC
 - Describe github repo for source code and mention it is private and contact me for access requests.
     Repo Url: https://github.com/csdmichael/Fabric-IQ-Ontology-Parts-Shortages
