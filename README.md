@@ -2,6 +2,8 @@
 
 An AI-powered shortage intelligence solution built on Microsoft Fabric, Fabric IQ Ontology, and Azure AI Foundry agents. It predicts, prioritizes, and recommends actions for parts shortages across a complex multi-plant supply chain.
 
+📄 **Full solution overview deck:** [Fabric-IQ-Ontology-Part-Shortages-AI-Intelligence.pdf](docs/Fabric-IQ-Ontology-Part-Shortages-AI-Intelligence.pdf)
+
 ---
 
 ## Table of Contents
@@ -67,13 +69,13 @@ The **Fabric IQ Ontology** provides a semantic layer over OneLake tables, modeli
 
 ## 4. ML Algorithms
 
-Three purpose-built ML models — all trained and served from **Microsoft Fabric** on features derived from the Fabric IQ Ontology — power the predictive and prescriptive layer of the solution:
+Three purpose-built ML problems — all trained and served from **Microsoft Fabric** on features derived from the Fabric IQ Ontology — power the predictive and prescriptive layer of the solution:
 
-- **Shortage Risk Calculator** — A gradient-boosted classifier that scores every open shortage with the probability of slipping past its required date. Inputs include supplier OTD history, lead-time variance, MRP signal stability, plant load, and machine-configuration criticality. Output is a calibrated risk score used to rank the *Top At-Risk Parts* view and drive proactive triage.
-- **Demand Forecaster** — A time-series model (gradient-boosted regression over engineered lag/seasonality features) that projects net part demand per material/plant across the 8-week launch cycle. Outputs feed the shortage-prediction pipeline and the cross-plant reallocation logic, and are back-tested with MAPE / RMSE / bias trend.
-- **Action Recommender** — A multi-class classifier that, given a scored shortage and the current supply state, recommends the best resolution path (expedite, reallocate from sister plant, substitute, re-plan, escalate). Trained on historical resolutions and continuously refined via the planner accept/reject feedback loop.
+- **Problem 1 — Forecasting next-period shortage rate (`forecast_t_plus_1`)** — *Recommended: CV-weighted ensemble: GradientBoostingRegressor + RandomForestRegressor (sklearn).* Projects net part demand and shortage rate per material/plant across the 8-week launch cycle over engineered lag/seasonality features. Outputs feed the shortage-prediction pipeline and the cross-plant reallocation logic, and are back-tested with MAPE / RMSE / bias trend.
+- **Problem 2 — Risk classification (`risk_binary` + `risk_severity`)** — *Recommended: Dual class-weight-balanced RandomForestClassifier (binary + 4-class severity).* Scores every open shortage with both the probability of slipping past its required date and a 4-class severity band. Inputs include supplier OTD history, lead-time variance, MRP signal stability, plant load, and machine-configuration criticality. Output drives the *Top At-Risk Parts* view and proactive triage.
+- **Problem 3 — Prescriptive recommendation ranking (`recommender_policy` + `recommender_outcome`)** — *Recommended: Two-model decomposition: RandomForestClassifier policy (4-class path) + RandomForestClassifier outcome (binary success).* Given a scored shortage and the current supply state, recommends the best resolution path (expedite, reallocate from sister plant, substitute, re-plan) and predicts the probability of success. Trained on historical resolutions and continuously refined via the planner accept/reject feedback loop.
 
-All three models are retrained on a scheduled cadence from curated gold-layer tables in OneLake, their outputs are written back as ML output tables, and their live performance (accuracy, precision/recall, MAPE, acceptance rate) is monitored in the Admin / IT Operations dashboards.
+All three models are retrained on a scheduled cadence from curated gold-layer tables in OneLake, their outputs are written back as ML output tables, and their live performance (MAPE, accuracy, precision/recall, acceptance rate) is monitored in the Admin / IT Operations dashboards.
 
 🎥 **Walkthrough video:** [ML Algorithms Overview](https://1drv.ms/v/c/4673b287399127d4/IQAqnV510hZFSIfadk20E9nUAcarb-BvMMudFbONGwM5_FM?e=DdzESB)
 
