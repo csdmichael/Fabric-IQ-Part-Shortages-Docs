@@ -305,7 +305,7 @@ In‑app architecture, dataflow, ML algorithm, table catalog, and ontology‑exp
 
 The **Fabric IQ Operations Agent** (`opsAgent_part_shortages`, a Microsoft Fabric Real-Time Intelligence agent) is the always-on counterpart to the on-demand Foundry agents in section 6.1. It runs on a **5-minute autonomous cadence**, evaluates 12 operational rules (R1–R12) against the live ML prediction tables (`ml.pred_shortage_risk`, `ml.pred_action_recommendation`, `ml.pred_demand_forecast`, `ml.pred_shortage_insights`) plus the operational ontology (`ShortageEvent`, `Supplier`, `MaterialPlant`, `PurchaseOrder`, `DemandForecast`), and routes the resulting actions to the right business team through **Microsoft Teams Adaptive Cards (v1.5)**, **email**, and **HTTP API triggers** — without taking any planner out of their flow.
 
-🎥 **Walkthrough video:** [Fabric Data Agent and Operations Agent](https://1drv.ms/v/c/4673b287399127d4/IQBXC3jSVzxYT4mpnFYTWHDMASMx10tA_RtWulWA1N2bb0c?e=p9VFyK)
+🎥 **Walkthrough video:** [Fabric Data Agent and Operations Agent](https://1drv.ms/v/c/4673b287399127d4/IQBXC3jSVzxYT4mpnFYTWHDMART05_6OONsDzGR_1Og0giw?e=hPYqv5)
 
 **Operations Agent — agent setup in Fabric portal**
 
