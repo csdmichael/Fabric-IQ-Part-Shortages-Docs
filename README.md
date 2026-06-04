@@ -201,6 +201,10 @@ Tools used by supply‑chain planners, SBMs, and operations leaders to monitor, 
 
 ![Agent Prompt Lab - Try in Chat](docs/Screenshots/UI/1.%20Business%20Operations/AI%20Assistants/04.b.%20Agent%20Prompt%20Lab%20-%20Try%20in%20Chat.png)
 
+**Chat Assistant — Floating Shortage Assistant** — A persistent floating chat panel (the *Shortage Assistant*, backed by the Foundry `chat-assistant` agent) that follows the planner across every page of the app. Users can launch it from anywhere — including directly from a *Try in Chat* card in the Agent Prompt Lab — pick an agent from the *AGENT* selector, and ask grounded natural‑language questions about open shortages. Responses are rendered as a markdown table with a citation back to the lakehouse source, an **auto‑generated chart** (donut / bar) inferred from the response shape, and inline copy / 👍 / 👎 controls that feed the continuous‑evaluation pipeline — so planners can ask, visualize, and rate answers without ever leaving the page they were working on.
+
+![Chat Assistant - Shortages by Plant](docs/Screenshots/UI/1.%20Business%20Operations/AI%20Assistants/04.c.%20Chat%20Assistant%20-%20Shortages%20by%20Plant.png)
+
 ### 6.2 Admin / IT Operations
 
 Tools used by IT and ML engineers to manage data ingestion, feature engineering, model training, and model performance monitoring.
