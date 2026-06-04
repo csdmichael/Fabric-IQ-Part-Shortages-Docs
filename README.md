@@ -17,6 +17,7 @@ An AI-powered shortage intelligence solution built on Microsoft Fabric, Fabric I
    - [6.1 Business Operations](#61-business-operations)
    - [6.2 Admin / IT Operations](#62-admin--it-operations)
    - [6.3 System Design & Documentation](#63-system-design--documentation)
+   - [6.4 Operations Agent & Automation Actions](#64-operations-agent--automation-actions)
 7. [Deployment Guide](#7-deployment-guide)
 8. [Source Code Repository](#8-source-code-repository)
 9. [Future Ideas — Extending the POC](#9-future-ideas--extending-the-poc)
@@ -69,13 +70,13 @@ The **Fabric IQ Ontology** provides a semantic layer over OneLake tables, modeli
 
 ## 4. ML Algorithms
 
-Three purpose-built ML problems — all trained and served from **Microsoft Fabric** on features derived from the Fabric IQ Ontology — power the predictive and prescriptive layer of the solution:
+Three purpose-built ML problems — all trained and scored on **Microsoft Fabric Spark** with **SynapseML LightGBM** — power the predictive and prescriptive layer of the solution. Every model uses a single distributed `pyspark.ml.Pipeline` (Imputer median + StringIndexer `handleInvalid="keep"` + VectorAssembler + LightGBM estimator), CrossValidator-tuned over a `ParamGridBuilder`, MLflow Spark-tracked, and engineered to scale to the full **30M+ shortage event** feature frame — the same Pipeline object trains and scores, so there is no train/serve skew.
 
-- **Problem 1 — Forecasting next-period shortage rate (`forecast_t_plus_1`)** — *Recommended: CV-weighted ensemble: GradientBoostingRegressor + RandomForestRegressor (sklearn).* Projects net part demand and shortage rate per material/plant across the 8-week launch cycle over engineered lag/seasonality features. Outputs feed the shortage-prediction pipeline and the cross-plant reallocation logic, and are back-tested with MAPE / RMSE / bias trend.
-- **Problem 2 — Risk classification (`risk_binary` + `risk_severity`)** — *Recommended: Dual class-weight-balanced RandomForestClassifier (binary + 4-class severity).* Scores every open shortage with both the probability of slipping past its required date and a 4-class severity band. Inputs include supplier OTD history, lead-time variance, MRP signal stability, plant load, and machine-configuration criticality. Output drives the *Top At-Risk Parts* view and proactive triage.
-- **Problem 3 — Prescriptive recommendation ranking (`recommender_policy` + `recommender_outcome`)** — *Recommended: Two-model decomposition: RandomForestClassifier policy (4-class path) + RandomForestClassifier outcome (binary success).* Given a scored shortage and the current supply state, recommends the best resolution path (expedite, reallocate from sister plant, substitute, re-plan) and predicts the probability of success. Trained on historical resolutions and continuously refined via the planner accept/reject feedback loop.
+- **Problem 1 — Demand forecast (`demand_forecast`)** — *Recommended: SynapseML `LightGBMRegressor` (Spark), CrossValidator-tuned.* Predicts the next-period plant-level shortage rate (target = `demand_qty / shortage_rate`) from rolling demand, on-hand cover, lead-time variance, and lagged shortage signals so SPMs get a forward signal before material shortages hit production. Headline metrics: RMSE / MAE / R². Output table: `ml.pred_demand_forecast`.
+- **Problem 2 — Risk classification (`risk_classifier`)** — *Recommended: SynapseML `LightGBMClassifier` (Spark), `objective="binary"`, `isUnbalance=true`, CrossValidator-tuned.* Scores every open shortage with a calibrated `P(at-risk)` probability and a 4-band class (`LOW` / `MEDIUM` / `HIGH` / `CRITICAL`) that drives the cockpit, Top At-Risk Parts view, and severity roll-ups. Native `isUnbalance` handling removes the need for row-level resampling at 30M+ row scale. Output table: `ml.pred_shortage_risk`.
+- **Problem 3 — Prescriptive recommendation (`action_recommender`)** — *Recommended: SynapseML `LightGBMClassifier` (Spark, multiclass) over 4 mitigation paths.* Recommends one of **Path A (Expedite Alternate Source)**, **Path B (Pull Regional Buffer Stock)**, **Path C (Re-sequence Production)**, or **Path D (Monitor Only)** with per-class confidence and a USD impact estimate, driving the AI Action Queue. SPM approvals / rejections from the cockpit flow back through `/agents/feedback` into the next redesign as a continuous-retraining signal. Output table: `ml.pred_action_recommendation`.
 
-All three models are retrained on a scheduled cadence from curated gold-layer tables in OneLake, their outputs are written back as ML output tables, and their live performance (MAPE, accuracy, precision/recall, acceptance rate) is monitored in the Admin / IT Operations dashboards.
+The pipeline runs as a **6-notebook pattern** under `fabric/notebooks/`: notebooks `01-03_ml_design_*` retrain when drift breaches a threshold and stage a new `model_version_id` with `status='active'` in the Lakehouse Delta `ml.ml_model_registry` table; notebooks `04-06_ml_prediction_*` resolve the active version, load the MLflow Spark `PipelineModel` from OneLake `Files/ml_artifacts/{version_id}/{task}_lightgbm/`, score via Spark, and overwrite the `ml.pred_*` tables. Notebook 06 runs last because it rebuilds `ml.pred_shortage_insights` by joining the other two prediction tables. A full design run on a small Fabric Spark pool completes a 3-task CV sweep on 30M rows in ~15–25 minutes; the prediction notebooks complete in minutes. Eleven `ml.*` Delta tables (4 prediction + 7 ML diagnostics — registry, training metrics, feature importance, coefficient matrix, selected features, performance, efficiency) plus the `mlcfg.*` customer-editable config schema underpin the Admin / IT Operations and ML Performance dashboards.
 
 🎥 **Walkthrough video:** [ML Algorithms Overview](https://1drv.ms/v/c/4673b287399127d4/IQAqnV510hZFSIfadk20E9nUAcarb-BvMMudFbONGwM5_FM?e=DdzESB)
 
@@ -296,6 +297,54 @@ In‑app architecture, dataflow, ML algorithm, table catalog, and ontology‑exp
 
 ![Login via SSO or OTP](docs/Screenshots/UI/Login%20via%20SSO%20or%20OTP.png)
 
+### 6.4 Operations Agent & Automation Actions
+
+The **Fabric IQ Operations Agent** (`opsAgent_part_shortages`, a Microsoft Fabric Real-Time Intelligence agent) is the always-on counterpart to the on-demand Foundry agents in section 6.1. It runs on a **5-minute autonomous cadence**, evaluates 12 operational rules (R1–R12) against the live ML prediction tables (`ml.pred_shortage_risk`, `ml.pred_action_recommendation`, `ml.pred_demand_forecast`, `ml.pred_shortage_insights`) plus the operational ontology (`ShortageEvent`, `Supplier`, `MaterialPlant`, `PurchaseOrder`, `DemandForecast`), and routes the resulting actions to the right business team through **Microsoft Teams Adaptive Cards (v1.5)**, **email**, and **HTTP API triggers** — without taking any planner out of their flow.
+
+**Operations Agent — agent setup in Fabric portal**
+
+![Operations Agent — Main](docs/Screenshots/Fabric%20Agents/1.%20Operations%20Agent%20-%20Main.png)
+
+The agent is bound to the `on_part_shortages` ontology as its knowledge source, runs to the operational instructions shown in the portal, and exposes its custom actions in the *Actions* panel — each action lights up as **Action connected** once its Power Automate flow is published.
+
+#### Daily Brief — Operations Manager
+
+The **Daily Brief – Operations Manager** action is the flagship custom action. Once per day, the Operations Agent assembles a grounded executive brief from the lakehouse and delivers it as a fully formatted HTML email through Power Automate + **Azure Communication Services (ACS)**. The same brief is also surfaced as a Daily Brief page inside the web UI, with a *Send Email* modal so any operator can dispatch it on demand.
+
+**Email — High-level summary, KPI tiles, severity mix, plant load, and Top 10 parts at risk**
+
+![Daily Parts Shortage Brief — Top 10 at risk](docs/Screenshots/Fabric%20Agents/2.a.%20Email%20-%20Daily%20Parts%20Shortage%20Brief.png)
+
+**Email — Shortages by severity + Recommended action playbook (paths A–D, SLA windows, owners)**
+
+![Daily Parts Shortage Brief — Shortages by severity](docs/Screenshots/Fabric%20Agents/2.b.%20Email%20-%20Daily%20Parts%20Shortage%20Brief%20-%20Shortages%20by%20Severity.png)
+
+The brief is intentionally grounded — every value comes from the parts-shortages warehouse via the Fabric Data Agent — and the recommended-action playbook maps each severity band (BRICKRED, BLACK, RED, YELLOW, GREEN) to one of the four mitigation paths the `action_recommender` ML model emits, with the owning role (SBM, SCSP, MFG, PMO) and SLA window pre-filled.
+
+#### Power Automate custom actions — Teams, Email, and API triggers
+
+All custom actions are implemented as **Power Automate flows** triggered by the *"When a Fabric Operations Agent action is invoked"* connector. The trigger output carries the structured payload from the lakehouse (shortage_id, recommended_path, risk_band, expected_impact_usd, owner_role, plant, supplier_code, rationale, …), and each flow fans the payload out across one or more of three integration surfaces:
+
+- **Microsoft Teams** — *Post adaptive card* (Adaptive Cards v1.5) into the *Parts Shortages War Room* team / *launch-blockers* channel, with severity color, owner @-mention, SLA countdown, and one-click **Approve / Decline / Snooze / Open in Cockpit** buttons. Approval clicks come back to the same flow and are POSTed to `/agents/feedback`, so every human-in-the-loop decision feeds the next ML retraining cycle.
+- **Email** — outbound email via **Azure Communication Services (ACS)** for the daily / weekly digests and proactive SLA-breach alerts (sender controlled by `AUTH_ACS_SENDER_ADDRESS`).
+- **HTTP / API triggers** — built-in *HTTP* action calls into downstream business systems (MAST, Kinaxis, SAP, supplier portals, ServiceNow, ticketing) and into the Fabric IQ API (`/agents/feedback`, `/shortages/feedback`) to update systems of record and route notifications to the right business team.
+
+| # | Custom action | Trigger condition (rule) | Primary delivery | Owner role |
+|---|---|---|---|---|
+| 1  | **Daily Brief — Operations Manager** | Scheduled daily | Email (ACS) + Teams | Operations Manager |
+| 2  | **PostDailyDigest** | End-of-shift roll-up | Teams adaptive card | Shift Lead |
+| 3  | **PostCriticalWarRoomAlert** | New BRICKRED / BLACK shortage (R1) | Teams adaptive card + Email | SBM + Procurement |
+| 4  | **ApproveClearingPath** | New ranked recommendation from `action_recommender` | Teams adaptive card with Approve / Decline buttons → `/agents/feedback` | SBM / SCSP / MFG / PMO |
+| 5  | **EscalateToProcurement** | Critical shortage with no SBM action in window | Teams + Email + ServiceNow API | Procurement Lead |
+| 6  | **FlagDemandSpike** | `demand_forecast` flags spike beyond on-hand + open-PO cover | Teams + planning-system API | SCSP |
+| 7  | **SlaBreachProactiveAlert** | Approaching path SLA breach (≤ 4h / 12h / 48h / 120h) | Teams + Email | Owner role per path |
+| 8  | **SupplierScorecardDigest** | Weekly supplier OTD / lead-time roll-up | Email (ACS) + Teams | SBM |
+| 9  | **WeeklyExecRetrospective** | Weekly cycle close | Email (ACS) | Executive |
+| 10 | **HandoffToNextShift** | Shift change | Teams adaptive card | Shift Lead |
+| 11 | **ResolveShortageWithFeedback** | Planner closes a shortage in Teams | HTTP → `/agents/feedback` | All planners |
+
+A portable **Power Automate kit** is checked into the source repo (one `.kit.md` per action) so any customer tenant can stand up the same automation surface: each kit lists the trigger outputs, the verbatim Adaptive Card JSON, the HTTP step contract, and the smoke-test steps. Combined with the 12 operational rules and the lakehouse-grounded knowledge source, this turns the predictive ML stack into a closed-loop operations system — agent detects → routes to the right business team → human decides → feedback retrains the model.
+
 ---
 
 ## 7. Deployment Guide
@@ -376,4 +425,4 @@ Today the Shortage Risk Calculator and Demand Forecaster are trained and scored 
 - **Continuous evaluation** of all Foundry agents (groundedness, relevance, safety) on a scheduled batch, with results trended in the Admin console.
 - **Multi‑tenant / multi‑program** isolation using Fabric workspace‑per‑program plus APIM products keyed by `program` claim.
 - **Event‑driven retraining** triggered by drift detected in the Shortage Risk Calculator or Demand Forecaster.
-- **Teams / Copilot Studio** front‑end so planners can chat with the Operations Orchestration Assistant from Microsoft Teams without leaving their workflow.
+- **Microsoft 365 Copilot / Copilot Studio** extension that wraps the Foundry orchestrator agent as a declarative-agent package, so planners can chat with the same grounded agent surfaces from M365 Copilot in addition to the Operations Agent's Teams Adaptive Cards already shipping in [section 6.4](#64-operations-agent--automation-actions).
