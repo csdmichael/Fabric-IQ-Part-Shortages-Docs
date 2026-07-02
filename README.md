@@ -12,6 +12,7 @@ An AI-powered shortage intelligence solution built on Microsoft Fabric, Fabric I
 2. [Solution Architecture](#2-solution-architecture)
 3. [Fabric IQ Ontology](#3-fabric-iq-ontology)
    - [3.1 Fabric Ontology Agent — Documentation](#31-fabric-ontology-agent--documentation)
+   - [3.2 Creating the Ontology with the Ontology Agent](#32-creating-the-ontology-with-the-ontology-agent)
 4. [ML Algorithms](#4-ml-algorithms)
 5. [Cost / Benefit Analysis](#5-cost--benefit-analysis)
 6. [User Interface](#6-user-interface)
@@ -93,6 +94,38 @@ The ontology used by this solution is built and operated with the **Microsoft Fa
 - 🔗 [Supplemental Terms of Use for Microsoft Azure Previews](https://azure.microsoft.com/support/legal/preview-supplemental-terms/)
 
 > **Preview note:** The Fabric Ontology Agent is currently in preview; billing terms and pricing for general availability aren't finalized.
+
+### 3.2 Creating the Ontology with the Ontology Agent
+
+The Parts Shortages ontology (`on_part_shortages`) was authored end-to-end with the Ontology Agent. The screenshots below walk through the exact create flow — from an empty ontology item to a published, grounded ontology.
+
+**Step 1 — Start with the Ontology agent** — Open a new (empty) Fabric ontology item. The Explorer shows *No entity types available*, and the canvas presents a **Get started** page. Select **Start with Ontology agent** to let the AI Copilot guide you through building the ontology (the alternative *Learn more* card just opens the docs).
+
+![Create a new ontology — Start with Ontology agent](docs/Screenshots/Fabric%20Agents/Ontology%20Agent/01.%20CreateNewOntology.png)
+
+**Step 2 — Reopen the agent on an existing ontology** — Once a definition exists, you can bring the agent back any time from the **Ontology agent** button on the toolbar to explain, query, or improve the ontology. Here the Explorer already lists the published entity types (`ClearingEvent`, `MachineBuild`, `MaterialDemandPlan`, `Part`, `PartShortage`, `Supplier360`, …).
+
+![Reopen the Ontology agent on an existing ontology](docs/Screenshots/Fabric%20Agents/Ontology%20Agent/02.%20Ontology%20Agent%20for%20existing%20Ontology.png)
+
+**Step 3 — Answer the agent's domain-scoping questions** — The agent opens in the chat panel and asks clarifying questions to scope the work (what event/condition to detect, the scope of parts vs assemblies vs suppliers, the authoritative source, and any files or business rules to include). One-click suggestion chips — *Build ontology from my data*, *Ask me questions first*, *Explain what an ontology is* — help you get going. The **Plan / Act** toggle stays on **Plan** (read-only) during this phase.
+
+![Ontology agent asks domain-scoping questions](docs/Screenshots/Fabric%20Agents/Ontology%20Agent/03.%20Business%20Entities%20First%20-%20Ontology%20Agent%20ask%20domain%20questions.png)
+
+**Step 4 — Chat to shape and draft the ontology** — Continue the conversation to refine grain, naming, and scope (for example, *include only business-facing entities, keep source-aligned names, optimize for both shortage investigation and operational planning*). The agent works through **Evaluating relationships → Drafting ontology definitions**, grounded in the discovered evidence.
+
+![Chat with the agent to draft the ontology](docs/Screenshots/Fabric%20Agents/Ontology%20Agent/04.%20Chat%20and%20draft%20ontology.png)
+
+**Step 5 — Review the draft summary and preview it** — The agent summarizes the proposed draft (in-scope entities and relationships, each with concrete source bindings, key fields, and semantic enrichment) with collapsible sections for *Key modeling choices*, *Validation results*, *Notable coverage*, *Remaining assumptions*, and *Next step*. Select **Preview ontology** to open a read-only view in the canvas.
+
+![Review draft summary and Preview ontology](docs/Screenshots/Fabric%20Agents/Ontology%20Agent/05.%20Preview%20draft%20ontology.png)
+
+**Step 6 — Review the proposed ontology in the canvas** — The canvas shows the full proposed structure as an *AI Proposal* — entity types in the Explorer and the relationship graph (e.g. `PartShortage` linked to `Part`, `Supplier360`, `MachineBuild`, `ClearingEvent`, and `ClearingPathOption`). A banner notes it's a read-only proposal. When you're satisfied, switch to **Act** mode and select **Act and approve**.
+
+![Review the proposed ontology graph](docs/Screenshots/Fabric%20Agents/Ontology%20Agent/06.%20Review%20proposed%20ontology.png)
+
+**Step 7 — Generate (apply) the ontology** — After approval in Act mode, the agent applies the definition — *Reviewing data sources → Reviewing business context → Generating Ontology* — and publishes it to the ontology item. From here the ontology is live and ready for querying and downstream use.
+
+![Generate and publish the ontology](docs/Screenshots/Fabric%20Agents/Ontology%20Agent/07.%20Generate%20Ontology.png)
 
 ---
 
