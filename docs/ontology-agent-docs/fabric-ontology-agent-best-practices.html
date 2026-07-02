@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ontology agent best practices (preview) - Microsoft Fabric | Microsoft Learn (preview)</title>
+  <meta name="description" content="Learn how to prepare your Microsoft Fabric workspaces, sources, and ontology so the Fabric ontology agent can build, improve, and query ontologies accurately and reliably." />
+  <style>
+:root {
+  --ms-blue: #0078d4;
+  --ms-blue-dark: #005a9e;
+  --ms-purple: #5c2d91;
+  --fabric-yellow: #f7b32b;
+  --text: #161616;
+  --text-secondary: #424242;
+  --text-tertiary: #616161;
+  --border: #e1e1e1;
+  --bg: #ffffff;
+  --bg-subtle: #faf9f8;
+  --bg-toc: #f3f2f1;
+  --link: #0078d4;
+  --important-bg: #fff4ce;
+  --important-border: #f7b32b;
+  --note-bg: #f0f6ff;
+  --note-border: #0078d4;
+  --tip-bg: #dff6dd;
+  --tip-border: #107c10;
+  --code-bg: #f3f2f1;
+  --max-content: 1600px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Top header bar - mimics Microsoft Learn */
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+.site-header-inner {
+  max-width: var(--max-content);
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.brand {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand-bar {
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: var(--ms-blue);
+  border-radius: 2px;
+}
+.brand-product {
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+.brand-sep {
+  color: var(--text-tertiary);
+  margin: 0 4px;
+}
+.preview-badge {
+  background: var(--ms-purple);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Three-column layout */
+.layout {
+  max-width: var(--max-content);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 280px 1fr 260px;
+  gap: 0;
+  min-height: calc(100vh - 56px);
+}
+.layout.no-rail { grid-template-columns: 280px 1fr; }
+
+/* Left TOC */
+.left-toc {
+  background: var(--bg-toc);
+  border-right: 1px solid var(--border);
+  padding: 24px 8px 24px 24px;
+  font-size: 14px;
+}
+.left-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.left-toc li {
+  margin: 0;
+}
+.left-toc a {
+  display: block;
+  padding: 8px 12px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 4px;
+}
+.left-toc a:hover {
+  background: rgba(0, 120, 212, 0.08);
+}
+.left-toc li.active a {
+  background: #ffffff;
+  color: var(--ms-blue);
+  font-weight: 600;
+  border-left: 3px solid var(--ms-blue);
+  padding-left: 9px;
+}
+
+/* Main content */
+main.content {
+  padding: 32px 48px;
+  min-width: 0;
+}
+.breadcrumbs {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.breadcrumbs a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.breadcrumbs a:hover { text-decoration: underline; color: var(--link); }
+.breadcrumbs .sep {
+  margin: 0 6px;
+  color: var(--text-tertiary);
+}
+
+h1.page-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+main.content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 40px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+main.content h3 {
+  font-size: 19px;
+  font-weight: 600;
+  margin-top: 32px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+main.content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+main.content p { margin: 12px 0; }
+main.content ul, main.content ol { padding-left: 28px; margin: 12px 0; }
+main.content li { margin: 6px 0; }
+main.content li > p { margin: 4px 0; }
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: "Cascadia Mono", "Consolas", "Monaco", monospace;
+  font-size: 0.92em;
+  color: #d83b01;
+}
+pre {
+  background: var(--code-bg);
+  padding: 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+pre code {
+  background: none;
+  padding: 0;
+  color: var(--text);
+}
+
+table {
+  border-collapse: collapse;
+  margin: 16px 0;
+  width: 100%;
+  font-size: 14px;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: var(--bg-subtle);
+  font-weight: 600;
+}
+
+/* Alerts */
+.alert {
+  border-left: 4px solid;
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 0 4px 4px 0;
+}
+.alert-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.alert-body p { margin: 4px 0; }
+.alert-body p:first-child { margin-top: 0; }
+.alert-body p:last-child { margin-bottom: 0; }
+.alert-important {
+  background: var(--important-bg);
+  border-color: var(--important-border);
+}
+.alert-important .alert-title { color: #835c00; }
+.alert-note {
+  background: var(--note-bg);
+  border-color: var(--note-border);
+}
+.alert-note .alert-title { color: var(--ms-blue-dark); }
+.alert-tip {
+  background: var(--tip-bg);
+  border-color: var(--tip-border);
+}
+.alert-tip .alert-title { color: #0b6a0b; }
+
+/* Figures */
+.learn-figure {
+  margin: 24px 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px;
+  background: var(--bg-subtle);
+}
+.learn-figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+.learn-figure-link { display: block; }
+.learn-figure figcaption {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  padding: 0 4px;
+}
+.figure-expand {
+  color: var(--link);
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+/* Right "In this article" rail */
+.in-this-article {
+  padding: 32px 16px 32px 24px;
+  font-size: 13px;
+  border-left: 1px solid var(--border);
+  position: sticky;
+  top: 56px;
+  align-self: start;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+.rail-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.in-this-article ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 1px solid var(--border);
+}
+.in-this-article li {
+  margin: 0;
+}
+.in-this-article a {
+  display: block;
+  padding: 4px 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+}
+.in-this-article a:hover {
+  color: var(--link);
+  border-left-color: var(--link);
+}
+.in-this-article .rail-h3 a { padding-left: 24px; font-size: 12.5px; }
+
+/* Landing page cards */
+.lede {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin: 16px 0 32px 0;
+  line-height: 1.5;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.learn-card {
+  display: block;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  text-decoration: none;
+  color: var(--text);
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+.learn-card:hover {
+  border-color: var(--ms-blue);
+  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.12);
+  text-decoration: none;
+}
+.learn-card h3 {
+  margin: 0 0 8px 0;
+  color: var(--ms-blue);
+  font-size: 17px;
+}
+.learn-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: 240px 1fr; }
+  .in-this-article { display: none; }
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  .left-toc { display: none; }
+  main.content { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-bar"></span>
+        <span>Microsoft Learn</span>
+        <span class="brand-sep">|</span>
+        <span class="brand-product">Microsoft Fabric documentation</span>
+      </a>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="left-toc"><ul>
+<li><a href="fabric-ontology-agent-overview.html">Overview</a></li>
+<li class="active"><a href="fabric-ontology-agent-best-practices.html">Best practices</a></li>
+<li><a href="fabric-ontology-agent-responsible-use.html">Responsible AI FAQ</a></li>
+<li><a href="fabric-ontology-agent-governance-faq.html">Governance &amp; privacy FAQ</a></li>
+<li><a href="fabric-ontology-agent-troubleshooting.html">Troubleshooting</a></li>
+<li><a href="fabric-ontology-agent-billing.html">Billing &amp; cost management</a></li>
+</ul></nav>
+    <main class="content">
+      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology Agent</a> <span class="sep">/</span> <span>Best practices</span></nav>
+      <h1 class="page-title">Ontology agent best practices (preview) <span class="preview-badge">PREVIEW</span></h1>
+      <p>The <a href="fabric-ontology-agent-overview.html">Microsoft Fabric ontology agent</a> builds, improves, and queries ontologies by reading the structure and sample data of your Fabric Lakehouses, Eventhouses, and semantic models. The agent gives better proposals when your workspace is organized. Easy-to-find sources and consistent ontology conventions improve the results.</p>
+<p>This article describes practices that help the agent generate accurate, grounded ontology drafts, patches, and queries that are ready to apply.</p>
+<h2 id="how-to-use-this-guide">How to use this guide</h2>
+<p>This guide is organized into four sequential phases, from organizing your workspace to working effectively with the agent. Each phase builds on the previous one, so apply the practices in order. Skipping prerequisites reduces the quality of the agent's proposals.</p>
+<h2 id="phase-1-organize-your-workspace">Phase 1: Organize your workspace</h2>
+<p>These practices help the agent find the right sources for your ontology.</p>
+<h3 id="keep-the-workspace-focused">Keep the workspace focused</h3>
+<p>Place the ontology item in the same workspace as the Lakehouses, Eventhouses, and semantic models you want it to model. The agent automatically explores items in the workspace where the ontology lives. If your data is scattered across many workspaces, the agent can only model the slice that lives alongside the ontology.</p>
+<p>If you must reuse data from another workspace, copy or shortcut it into the ontology's workspace before you start.</p>
+<h3 id="limit-clutter-in-the-workspace">Limit clutter in the workspace</h3>
+<p>The agent samples Lakehouses and Eventhouses to understand what's available. A workspace with many unrelated items makes the agent's initial discovery slower and noisier. Move experiments, archived items, and unrelated artifacts to a separate workspace so the agent focuses on what matters.</p>
+<h3 id="make-sure-you-have-permission-to-read-every-relevant-source">Make sure you have permission to read every relevant source</h3>
+<p>The agent uses your identity to access workspace data. If you can't read a Lakehouse, Eventhouse, or semantic model, the agent can't read it either. Before you start, check your workspace role. It must grant at least read access to every source you want the agent to consider. Check your role on any shortcut or source workspace too.</p>
+<h2 id="phase-2-prepare-your-data-sources">Phase 2: Prepare your data sources</h2>
+<p>These practices make your data discoverable and bindable.</p>
+<h3 id="use-clear-descriptive-table-and-column-names">Use clear, descriptive table and column names</h3>
+<p>The agent reads table and column names as a primary signal when proposing entity types, properties, and bindings. Names that are short, descriptive, and consistent give the agent strong grounding.</p>
+<p>Avoid:</p>
+<ul>
+<li>Cryptic abbreviations that aren't documented anywhere the agent can read.</li>
+<li>Reusing the same column name for different meanings across tables (it breaks join inference).</li>
+</ul>
+<h3 id="keep-identity-columns-stable-and-unique">Keep identity columns stable and unique</h3>
+<p>Each entity type in an ontology needs a unique identity. The agent picks identity properties from the columns it sees. Make sure each entity-like table has a stable, unique key column with a clear name.</p>
+<p>If your key is composed of multiple columns, add a derived single-column key in your Lakehouse or Kusto Query Language (KQL) table to make binding straightforward.</p>
+<h3 id="add-foreign-key-columns-for-relationships">Add foreign-key columns for relationships</h3>
+<p>The agent infers relationships by looking for shared keys across tables. Make those keys explicit:</p>
+<ul>
+<li>In a Lakehouse, add a column on the child table that holds the parent's key.</li>
+<li>In an Eventhouse, ensure your event tables carry the entity keys they refer to.</li>
+</ul>
+<p>When your join keys appear clearly in the data, the agent proposes more accurate relationships and contextualizations.</p>
+<h3 id="use-consistent-value-types">Use consistent value types</h3>
+<p>The agent normalizes value types when it drafts entity properties. Inconsistent types across similar columns (sometimes <code>string</code>, sometimes <code>int</code>, sometimes <code>bigint</code> for the same logical column) lead to validation warnings and brittle bindings. Pick a type per logical column and use it everywhere.</p>
+<h3 id="for-time-series-data-include-a-clear-timestamp-column">For time-series data, include a clear timestamp column</h3>
+<p>When the agent models telemetry, metrics, or other time-stamped data, it creates a <strong>time-series binding</strong> that requires a timestamp column. Use a clear, single timestamp column per table (for example, <code>EventTimeUtc</code>) and store values in UTC. Avoid splitting time across multiple columns (<code>Date</code> + <code>Hour</code> + <code>Minute</code>); convert it to a single timestamp first.</p>
+<h2 id="phase-3-follow-ontology-design-conventions">Phase 3: Follow ontology design conventions</h2>
+<p>These practices make ontology drafts ready to apply and easier to evolve.</p>
+<h3 id="use-stable-descriptive-entity-and-property-names">Use stable, descriptive entity and property names</h3>
+<p>Entity type names, relationship names, and property names show up everywhere downstream: in queries, in apply results, and in operational dashboards. Choose short, descriptive names that start with a letter and contain only letters, digits, and (for property names) underscores or hyphens. Pick names you'd be comfortable using in a SQL or KQL query a year from now. The agent enforces the exact length and character rules at validation time, and tells you if a name doesn't comply.</p>
+<h2 id="phase-4-work-effectively-with-the-agent">Phase 4: Work effectively with the agent</h2>
+<h3 id="start-in-plan-mode">Start in Plan mode</h3>
+<p>Plan mode is the default for a reason. Use it to:</p>
+<ul>
+<li>Explore proposals before any changes happen.</li>
+<li>Compare alternative drafts (ask the agent to redo with different priorities).</li>
+<li>Double-check validation results.</li>
+</ul>
+<p>Switch to Act mode only when you're ready to let the agent apply changes.</p>
+<h3 id="be-explicit-when-you-switch-to-act-mode">Be explicit when you switch to Act mode</h3>
+<p>When you switch to Act mode, the agent still tells you what it intends to apply before applying. Confirm the scope ("apply just these three changes" vs. "apply everything") and watch for the per-item status the agent streams back as it applies the changes.</p>
+<h3 id="give-the-agent-feedback-inside-the-conversation">Give the agent feedback inside the conversation</h3>
+<p>If a proposal looks wrong or low quality, say so in the chat, and say <em>why</em>. The agent uses your follow-up to refine its next turn. Specific feedback gets you to a good result faster than vague feedback. For example, tell the agent when it splits one entity type into two that share an ID. That detail helps more than a vague comment such as "this result is bad."</p>
+<h3 id="review-the-draft-preview-in-the-ontology-canvas">Review the draft preview in the ontology canvas</h3>
+<p>When the agent finishes a draft in Plan mode, it posts a preview action in its chat message. Open it: the Fabric ontology canvas renders a read-only preview of the proposed ontology, and it's the best surface for reviewing what the agent is about to do.</p>
+<ul>
+<li><strong>For a new ontology</strong>, walk the proposed entity types, properties, data bindings, and relationship graph in the canvas before you switch to Act mode. The canvas shows the structure exactly as the agent creates it.</li>
+<li><strong>For an improvement</strong>, look at the change indicators and the per-item explanations to confirm that the agent is changing what you wanted, and only what you wanted. Pay extra attention to items flagged as removed; they appear in the preview so you can confirm the deletions on purpose.</li>
+</ul>
+<p>The preview is read-only: to adjust the draft, ask the agent in the chat and open the next preview action it posts. Switch to Act mode only when the canvas matches what you want.</p>
+<h2 id="related-content">Related content</h2>
+<ul>
+<li><a href="fabric-ontology-agent-overview.html">Microsoft Fabric ontology agent overview</a></li>
+<li><a href="fabric-ontology-agent-responsible-use.html">Responsible AI FAQ</a></li>
+<li><a href="fabric-ontology-agent-governance-faq.html">Governance, privacy, and AI model FAQ</a></li>
+<li><a href="fabric-ontology-agent-troubleshooting.html">Troubleshooting</a></li>
+</ul>
+    </main>
+    <aside class="in-this-article">
+  <div class="rail-title">In this article</div>
+  <ul>
+<li class="rail-h2"><a href="#how-to-use-this-guide">How to use this guide</a></li>
+<li class="rail-h2"><a href="#phase-1-organize-your-workspace">Phase 1: Organize your workspace</a></li>
+<li class="rail-h3"><a href="#keep-the-workspace-focused">Keep the workspace focused</a></li>
+<li class="rail-h3"><a href="#limit-clutter-in-the-workspace">Limit clutter in the workspace</a></li>
+<li class="rail-h3"><a href="#make-sure-you-have-permission-to-read-every-relevant-source">Make sure you have permission to read every relevant source</a></li>
+<li class="rail-h2"><a href="#phase-2-prepare-your-data-sources">Phase 2: Prepare your data sources</a></li>
+<li class="rail-h3"><a href="#use-clear-descriptive-table-and-column-names">Use clear, descriptive table and column names</a></li>
+<li class="rail-h3"><a href="#keep-identity-columns-stable-and-unique">Keep identity columns stable and unique</a></li>
+<li class="rail-h3"><a href="#add-foreign-key-columns-for-relationships">Add foreign-key columns for relationships</a></li>
+<li class="rail-h3"><a href="#use-consistent-value-types">Use consistent value types</a></li>
+<li class="rail-h3"><a href="#for-time-series-data-include-a-clear-timestamp-column">For time-series data, include a clear timestamp column</a></li>
+<li class="rail-h2"><a href="#phase-3-follow-ontology-design-conventions">Phase 3: Follow ontology design conventions</a></li>
+<li class="rail-h3"><a href="#use-stable-descriptive-entity-and-property-names">Use stable, descriptive entity and property names</a></li>
+<li class="rail-h2"><a href="#phase-4-work-effectively-with-the-agent">Phase 4: Work effectively with the agent</a></li>
+<li class="rail-h3"><a href="#start-in-plan-mode">Start in Plan mode</a></li>
+<li class="rail-h3"><a href="#be-explicit-when-you-switch-to-act-mode">Be explicit when you switch to Act mode</a></li>
+<li class="rail-h3"><a href="#give-the-agent-feedback-inside-the-conversation">Give the agent feedback inside the conversation</a></li>
+<li class="rail-h3"><a href="#review-the-draft-preview-in-the-ontology-canvas">Review the draft preview in the ontology canvas</a></li>
+<li class="rail-h2"><a href="#related-content">Related content</a></li>
+  </ul>
+</aside>
+  </div>
+</body>
+</html>

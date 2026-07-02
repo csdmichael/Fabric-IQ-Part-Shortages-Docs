@@ -11,6 +11,7 @@ An AI-powered shortage intelligence solution built on Microsoft Fabric, Fabric I
 1. [Business Problem](#1-business-problem)
 2. [Solution Architecture](#2-solution-architecture)
 3. [Fabric IQ Ontology](#3-fabric-iq-ontology)
+   - [3.1 Fabric Ontology Agent — Documentation](#31-fabric-ontology-agent--documentation)
 4. [ML Algorithms](#4-ml-algorithms)
 5. [Cost / Benefit Analysis](#5-cost--benefit-analysis)
 6. [User Interface](#6-user-interface)
@@ -65,6 +66,33 @@ The **Fabric IQ Ontology** provides a semantic layer over OneLake tables, modeli
 ![Shortage Event](docs/Screenshots/Fabric%20IQ%20Ontology/ShortageEvent.png)
 
 🎥 **Walkthrough video:** [Fabric IQ Ontology Overview](https://1drv.ms/v/c/4673b287399127d4/IQDdRsI2DMAAR7c93slkDaq3ATl-gir-r_6HTpdtNzdMHtY?e=u1tZsM)
+
+### 3.1 Fabric Ontology Agent — Documentation
+
+The ontology used by this solution is built and operated with the **Microsoft Fabric Ontology Agent (preview)** — an AI-powered Copilot that creates, improves, and queries ontologies over Fabric workspace data through a natural-language chat interface. A local, offline copy of the customer documentation (styled like Microsoft Learn) is included under [docs/ontology-agent-docs/](docs/ontology-agent-docs/index.html).
+
+**What the agent does** — Grounds an ontology in your workspace data by defining *entity types*, *relationships*, *data bindings*, and *contextualizations*, then lets you query it in plain language (auto-selecting **KQL** for Eventhouse tables, **SQL** for Lakehouse tables, and **GQL** for graph traversals). It runs a guided **Discover → Draft → Validate → Apply** flow, previews every change in the ontology canvas, and uses your own identity (delegated access) so it can only read/write what your Entra ID + Fabric RBAC already allow. A **Plan mode** (safe, read-only, default) vs **Act mode** (applies changes) toggle keeps you in control.
+
+**Documentation pages** (local copies):
+
+| Page | Summary |
+|---|---|
+| 📖 [Overview](docs/ontology-agent-docs/fabric-ontology-agent-overview.html) | What an ontology is, how to create one with the agent, the Plan/Act modes, the draft-preview canvas, supported data sources (Lakehouse, Eventhouse, semantic model, GraphModel), regions, and current preview limitations. |
+| ✅ [Best practices](docs/ontology-agent-docs/fabric-ontology-agent-best-practices.html) | A 4-phase guide to prepare for accurate results: organize your workspace, prepare data sources, follow ontology design conventions, and work effectively with the agent. |
+| 🛡️ [Responsible AI FAQ](docs/ontology-agent-docs/fabric-ontology-agent-responsible-use.html) | Reliability of results, how the agent uses and collects data, fairness considerations, handling unexpected content, and recommended human-in-the-loop workflow integration. |
+| 🔐 [Governance & privacy FAQ](docs/ontology-agent-docs/fabric-ontology-agent-governance-faq.html) | Data & privacy, compliance and data residency (incl. EU Data Boundary), model and data usage (no foundation-model training on your data), reliability/safety, and access control. |
+| 🧰 [Troubleshooting](docs/ontology-agent-docs/fabric-ontology-agent-troubleshooting.html) | Fixes for common authorization/access, ontology creation, existing-ontology, Plan/Act mode, and AI/model issues, plus where to get more help. |
+| 💲 [Billing & cost management](docs/ontology-agent-docs/fabric-ontology-agent-billing.html) | Consumption-based billing backed by Fabric capacity, what incurs cost (create / improve / query operations), what's free during preview, and tips to manage spend. |
+
+**Useful links:**
+
+- 🗂️ [Ontology agent docs — local index](docs/ontology-agent-docs/index.html)
+- 🔗 [What is ontology (preview)? — Microsoft Learn](https://learn.microsoft.com/fabric/iq/ontology/overview)
+- 🔗 [Copilot in Microsoft Fabric — overview](https://learn.microsoft.com/fabric/get-started/copilot-fabric-overview)
+- 🔗 [Microsoft Fabric pricing](https://azure.microsoft.com/pricing/details/microsoft-fabric/)
+- 🔗 [Supplemental Terms of Use for Microsoft Azure Previews](https://azure.microsoft.com/support/legal/preview-supplemental-terms/)
+
+> **Preview note:** The Fabric Ontology Agent is currently in preview; billing terms and pricing for general availability aren't finalized.
 
 ---
 

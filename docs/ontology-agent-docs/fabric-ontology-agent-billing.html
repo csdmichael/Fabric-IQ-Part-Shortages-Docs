@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ontology agent billing (preview) - Microsoft Fabric | Microsoft Learn (preview)</title>
+  <meta name="description" content="Learn how the Microsoft Fabric ontology agent is billed during preview, what is billable, and how to manage costs." />
+  <style>
+:root {
+  --ms-blue: #0078d4;
+  --ms-blue-dark: #005a9e;
+  --ms-purple: #5c2d91;
+  --fabric-yellow: #f7b32b;
+  --text: #161616;
+  --text-secondary: #424242;
+  --text-tertiary: #616161;
+  --border: #e1e1e1;
+  --bg: #ffffff;
+  --bg-subtle: #faf9f8;
+  --bg-toc: #f3f2f1;
+  --link: #0078d4;
+  --important-bg: #fff4ce;
+  --important-border: #f7b32b;
+  --note-bg: #f0f6ff;
+  --note-border: #0078d4;
+  --tip-bg: #dff6dd;
+  --tip-border: #107c10;
+  --code-bg: #f3f2f1;
+  --max-content: 1600px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Top header bar - mimics Microsoft Learn */
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+.site-header-inner {
+  max-width: var(--max-content);
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.brand {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand-bar {
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: var(--ms-blue);
+  border-radius: 2px;
+}
+.brand-product {
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+.brand-sep {
+  color: var(--text-tertiary);
+  margin: 0 4px;
+}
+.preview-badge {
+  background: var(--ms-purple);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Three-column layout */
+.layout {
+  max-width: var(--max-content);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 280px 1fr 260px;
+  gap: 0;
+  min-height: calc(100vh - 56px);
+}
+.layout.no-rail { grid-template-columns: 280px 1fr; }
+
+/* Left TOC */
+.left-toc {
+  background: var(--bg-toc);
+  border-right: 1px solid var(--border);
+  padding: 24px 8px 24px 24px;
+  font-size: 14px;
+}
+.left-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.left-toc li {
+  margin: 0;
+}
+.left-toc a {
+  display: block;
+  padding: 8px 12px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 4px;
+}
+.left-toc a:hover {
+  background: rgba(0, 120, 212, 0.08);
+}
+.left-toc li.active a {
+  background: #ffffff;
+  color: var(--ms-blue);
+  font-weight: 600;
+  border-left: 3px solid var(--ms-blue);
+  padding-left: 9px;
+}
+
+/* Main content */
+main.content {
+  padding: 32px 48px;
+  min-width: 0;
+}
+.breadcrumbs {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.breadcrumbs a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.breadcrumbs a:hover { text-decoration: underline; color: var(--link); }
+.breadcrumbs .sep {
+  margin: 0 6px;
+  color: var(--text-tertiary);
+}
+
+h1.page-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+main.content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 40px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+main.content h3 {
+  font-size: 19px;
+  font-weight: 600;
+  margin-top: 32px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+main.content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+main.content p { margin: 12px 0; }
+main.content ul, main.content ol { padding-left: 28px; margin: 12px 0; }
+main.content li { margin: 6px 0; }
+main.content li > p { margin: 4px 0; }
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: "Cascadia Mono", "Consolas", "Monaco", monospace;
+  font-size: 0.92em;
+  color: #d83b01;
+}
+pre {
+  background: var(--code-bg);
+  padding: 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+pre code {
+  background: none;
+  padding: 0;
+  color: var(--text);
+}
+
+table {
+  border-collapse: collapse;
+  margin: 16px 0;
+  width: 100%;
+  font-size: 14px;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: var(--bg-subtle);
+  font-weight: 600;
+}
+
+/* Alerts */
+.alert {
+  border-left: 4px solid;
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 0 4px 4px 0;
+}
+.alert-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.alert-body p { margin: 4px 0; }
+.alert-body p:first-child { margin-top: 0; }
+.alert-body p:last-child { margin-bottom: 0; }
+.alert-important {
+  background: var(--important-bg);
+  border-color: var(--important-border);
+}
+.alert-important .alert-title { color: #835c00; }
+.alert-note {
+  background: var(--note-bg);
+  border-color: var(--note-border);
+}
+.alert-note .alert-title { color: var(--ms-blue-dark); }
+.alert-tip {
+  background: var(--tip-bg);
+  border-color: var(--tip-border);
+}
+.alert-tip .alert-title { color: #0b6a0b; }
+
+/* Figures */
+.learn-figure {
+  margin: 24px 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px;
+  background: var(--bg-subtle);
+}
+.learn-figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+.learn-figure-link { display: block; }
+.learn-figure figcaption {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  padding: 0 4px;
+}
+.figure-expand {
+  color: var(--link);
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+/* Right "In this article" rail */
+.in-this-article {
+  padding: 32px 16px 32px 24px;
+  font-size: 13px;
+  border-left: 1px solid var(--border);
+  position: sticky;
+  top: 56px;
+  align-self: start;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+.rail-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.in-this-article ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 1px solid var(--border);
+}
+.in-this-article li {
+  margin: 0;
+}
+.in-this-article a {
+  display: block;
+  padding: 4px 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+}
+.in-this-article a:hover {
+  color: var(--link);
+  border-left-color: var(--link);
+}
+.in-this-article .rail-h3 a { padding-left: 24px; font-size: 12.5px; }
+
+/* Landing page cards */
+.lede {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin: 16px 0 32px 0;
+  line-height: 1.5;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.learn-card {
+  display: block;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  text-decoration: none;
+  color: var(--text);
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+.learn-card:hover {
+  border-color: var(--ms-blue);
+  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.12);
+  text-decoration: none;
+}
+.learn-card h3 {
+  margin: 0 0 8px 0;
+  color: var(--ms-blue);
+  font-size: 17px;
+}
+.learn-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: 240px 1fr; }
+  .in-this-article { display: none; }
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  .left-toc { display: none; }
+  main.content { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-bar"></span>
+        <span>Microsoft Learn</span>
+        <span class="brand-sep">|</span>
+        <span class="brand-product">Microsoft Fabric documentation</span>
+      </a>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="left-toc"><ul>
+<li><a href="fabric-ontology-agent-overview.html">Overview</a></li>
+<li><a href="fabric-ontology-agent-best-practices.html">Best practices</a></li>
+<li><a href="fabric-ontology-agent-responsible-use.html">Responsible AI FAQ</a></li>
+<li><a href="fabric-ontology-agent-governance-faq.html">Governance &amp; privacy FAQ</a></li>
+<li><a href="fabric-ontology-agent-troubleshooting.html">Troubleshooting</a></li>
+<li class="active"><a href="fabric-ontology-agent-billing.html">Billing &amp; cost management</a></li>
+</ul></nav>
+    <main class="content">
+      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology Agent</a> <span class="sep">/</span> <span>Billing &amp; cost management</span></nav>
+      <h1 class="page-title">Ontology agent billing (preview) <span class="preview-badge">PREVIEW</span></h1>
+      <p>The <a href="fabric-ontology-agent-overview.html">Microsoft Fabric ontology agent</a> uses generative AI to build, improve, and query ontologies over your Microsoft Fabric workspace data. Because the agent calls large language models (LLMs), usage incurs costs. This article describes how billing is planned and how to control spend.</p>
+<div class="alert alert-important">
+  <div class="alert-title">Important</div>
+  <div class="alert-body"><p>The Microsoft Fabric ontology agent is currently in preview. Billing terms and pricing for general availability aren't finalized. The information in this article reflects the current direction. Microsoft announces final pricing before general availability. Check this page for updates.</p></div>
+</div>
+
+<h2 id="how-the-ontology-agent-is-billed">How the ontology agent is billed</h2>
+<p>The ontology agent uses the same <strong>consumption-based</strong> billing model as other Copilot in Microsoft Fabric experiences, integrated with <strong>Fabric capacity</strong>. You pay only for the AI work the agent performs.</p>
+<ul>
+<li><strong>Capacity-backed</strong>: Agent consumption draws from the Fabric capacity that hosts the workspace where the ontology lives.</li>
+<li><strong>Operation-scoped</strong>: Charges accrue for each agent operation: creating an ontology, improving an ontology, and queries.</li>
+<li><strong>Variable by operation type</strong>: A short query consumes few tokens and incurs low cost. A full ontology draft involves many tool calls and multiple LLM passes (planning, drafting, reviewing, formatting), and consumes more tokens and therefore more cost.</li>
+</ul>
+<p>For up-to-date pricing details and capacity sizing guidance for Copilot in Microsoft Fabric, see the <a href="https://azure.microsoft.com/pricing/details/microsoft-fabric/">Microsoft Fabric pricing page</a> and <a href="https://learn.microsoft.com/fabric/get-started/copilot-fabric-overview">Copilot in Microsoft Fabric overview</a>.</p>
+<h2 id="what-incurs-cost">What incurs cost</h2>
+<p>The following operations involve LLM calls and tool execution, so they incur cost:</p>
+<ul>
+<li><strong>Creating an ontology</strong>: clarification, discovery, drafting, validation, apply planning, and apply execution.</li>
+<li><strong>Improving an ontology</strong>: refreshing the agent's view of the current schema, patch construction, validation, apply planning, and apply execution.</li>
+<li><strong>Queries</strong>: The agent writes and executes queries in Kusto Query Language (KQL), SQL, and Graph Query Language (GQL).</li>
+</ul>
+<p>The underlying Fabric services, not the ontology agent, bill for pure data storage such as the ontology definition, your Lakehouses, and your Eventhouses.</p>
+<h2 id="what-is-free-during-preview">What is free during preview</h2>
+<p>During the preview, the ontology agent is provided to help customers evaluate the experience. Microsoft announces final billing turn-on dates and any preview-period concessions separately.</p>
+<h2 id="tips-to-manage-cost">Tips to manage cost</h2>
+<ul>
+<li><strong>Use Plan mode to iterate</strong>: Plan mode and Act mode both consume tokens, but iterating in Plan mode usually requires fewer total turns than iterating after applying changes.</li>
+<li><strong>Be specific</strong>: Vague prompts cause longer reasoning loops and more tool calls. Specific prompts ("add a relationship between Flight and Gate using FlightId and GateId") complete in fewer turns.</li>
+<li><strong>Trust validation</strong>: Don't ask the agent to rerun validation repeatedly without changes; validation runs automatically before each apply.</li>
+<li><strong>Reuse evidence across turns</strong>: The agent caches discovery evidence within a conversation. Asking it to rediscover the same source repeatedly is wasted work.</li>
+<li><strong>Don't keep one long conversation alive</strong>: Conversations have a 24-hour limit anyway. Long conversations carry large context, which makes each turn more expensive.</li>
+</ul>
+<h2 id="cost-visibility">Cost visibility</h2>
+<p>When billing is in effect, ontology agent consumption appears under Microsoft Cost Management with the Fabric capacity that hosts the conversation. To see which workspaces and capacities drive spend, use Cost Management's filters and tags. This view works the same way as it does for other Fabric workloads.</p>
+<h2 id="related-content">Related content</h2>
+<ul>
+<li><a href="fabric-ontology-agent-overview.html">Microsoft Fabric ontology agent overview</a></li>
+<li><a href="fabric-ontology-agent-best-practices.html">Best practices</a></li>
+<li><a href="https://azure.microsoft.com/pricing/details/microsoft-fabric/">Microsoft Fabric pricing page</a></li>
+<li><a href="https://learn.microsoft.com/fabric/get-started/copilot-fabric-overview">Copilot in Microsoft Fabric overview</a></li>
+</ul>
+    </main>
+    <aside class="in-this-article">
+  <div class="rail-title">In this article</div>
+  <ul>
+<li class="rail-h2"><a href="#how-the-ontology-agent-is-billed">How the ontology agent is billed</a></li>
+<li class="rail-h2"><a href="#what-incurs-cost">What incurs cost</a></li>
+<li class="rail-h2"><a href="#what-is-free-during-preview">What is free during preview</a></li>
+<li class="rail-h2"><a href="#tips-to-manage-cost">Tips to manage cost</a></li>
+<li class="rail-h2"><a href="#cost-visibility">Cost visibility</a></li>
+<li class="rail-h2"><a href="#related-content">Related content</a></li>
+  </ul>
+</aside>
+  </div>
+</body>
+</html>

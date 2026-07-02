@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ontology agent (preview) - Microsoft Fabric | Microsoft Learn (preview)</title>
+  <meta name="description" content="Learn about the Microsoft Fabric ontology agent, an AI-powered Copilot that helps you create and operate ontologies over your Fabric workspace data through a chat interface." />
+  <style>
+:root {
+  --ms-blue: #0078d4;
+  --ms-blue-dark: #005a9e;
+  --ms-purple: #5c2d91;
+  --fabric-yellow: #f7b32b;
+  --text: #161616;
+  --text-secondary: #424242;
+  --text-tertiary: #616161;
+  --border: #e1e1e1;
+  --bg: #ffffff;
+  --bg-subtle: #faf9f8;
+  --bg-toc: #f3f2f1;
+  --link: #0078d4;
+  --important-bg: #fff4ce;
+  --important-border: #f7b32b;
+  --note-bg: #f0f6ff;
+  --note-border: #0078d4;
+  --tip-bg: #dff6dd;
+  --tip-border: #107c10;
+  --code-bg: #f3f2f1;
+  --max-content: 1600px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Top header bar - mimics Microsoft Learn */
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+.site-header-inner {
+  max-width: var(--max-content);
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.brand {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand-bar {
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: var(--ms-blue);
+  border-radius: 2px;
+}
+.brand-product {
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+.brand-sep {
+  color: var(--text-tertiary);
+  margin: 0 4px;
+}
+.preview-badge {
+  background: var(--ms-purple);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Three-column layout */
+.layout {
+  max-width: var(--max-content);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 280px 1fr 260px;
+  gap: 0;
+  min-height: calc(100vh - 56px);
+}
+.layout.no-rail { grid-template-columns: 280px 1fr; }
+
+/* Left TOC */
+.left-toc {
+  background: var(--bg-toc);
+  border-right: 1px solid var(--border);
+  padding: 24px 8px 24px 24px;
+  font-size: 14px;
+}
+.left-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.left-toc li {
+  margin: 0;
+}
+.left-toc a {
+  display: block;
+  padding: 8px 12px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 4px;
+}
+.left-toc a:hover {
+  background: rgba(0, 120, 212, 0.08);
+}
+.left-toc li.active a {
+  background: #ffffff;
+  color: var(--ms-blue);
+  font-weight: 600;
+  border-left: 3px solid var(--ms-blue);
+  padding-left: 9px;
+}
+
+/* Main content */
+main.content {
+  padding: 32px 48px;
+  min-width: 0;
+}
+.breadcrumbs {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.breadcrumbs a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.breadcrumbs a:hover { text-decoration: underline; color: var(--link); }
+.breadcrumbs .sep {
+  margin: 0 6px;
+  color: var(--text-tertiary);
+}
+
+h1.page-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+main.content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 40px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+main.content h3 {
+  font-size: 19px;
+  font-weight: 600;
+  margin-top: 32px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+main.content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+main.content p { margin: 12px 0; }
+main.content ul, main.content ol { padding-left: 28px; margin: 12px 0; }
+main.content li { margin: 6px 0; }
+main.content li > p { margin: 4px 0; }
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: "Cascadia Mono", "Consolas", "Monaco", monospace;
+  font-size: 0.92em;
+  color: #d83b01;
+}
+pre {
+  background: var(--code-bg);
+  padding: 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+pre code {
+  background: none;
+  padding: 0;
+  color: var(--text);
+}
+
+table {
+  border-collapse: collapse;
+  margin: 16px 0;
+  width: 100%;
+  font-size: 14px;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: var(--bg-subtle);
+  font-weight: 600;
+}
+
+/* Alerts */
+.alert {
+  border-left: 4px solid;
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 0 4px 4px 0;
+}
+.alert-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.alert-body p { margin: 4px 0; }
+.alert-body p:first-child { margin-top: 0; }
+.alert-body p:last-child { margin-bottom: 0; }
+.alert-important {
+  background: var(--important-bg);
+  border-color: var(--important-border);
+}
+.alert-important .alert-title { color: #835c00; }
+.alert-note {
+  background: var(--note-bg);
+  border-color: var(--note-border);
+}
+.alert-note .alert-title { color: var(--ms-blue-dark); }
+.alert-tip {
+  background: var(--tip-bg);
+  border-color: var(--tip-border);
+}
+.alert-tip .alert-title { color: #0b6a0b; }
+
+/* Figures */
+.learn-figure {
+  margin: 24px 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px;
+  background: var(--bg-subtle);
+}
+.learn-figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+.learn-figure-link { display: block; }
+.learn-figure figcaption {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  padding: 0 4px;
+}
+.figure-expand {
+  color: var(--link);
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+/* Right "In this article" rail */
+.in-this-article {
+  padding: 32px 16px 32px 24px;
+  font-size: 13px;
+  border-left: 1px solid var(--border);
+  position: sticky;
+  top: 56px;
+  align-self: start;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+.rail-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.in-this-article ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 1px solid var(--border);
+}
+.in-this-article li {
+  margin: 0;
+}
+.in-this-article a {
+  display: block;
+  padding: 4px 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+}
+.in-this-article a:hover {
+  color: var(--link);
+  border-left-color: var(--link);
+}
+.in-this-article .rail-h3 a { padding-left: 24px; font-size: 12.5px; }
+
+/* Landing page cards */
+.lede {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin: 16px 0 32px 0;
+  line-height: 1.5;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.learn-card {
+  display: block;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  text-decoration: none;
+  color: var(--text);
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+.learn-card:hover {
+  border-color: var(--ms-blue);
+  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.12);
+  text-decoration: none;
+}
+.learn-card h3 {
+  margin: 0 0 8px 0;
+  color: var(--ms-blue);
+  font-size: 17px;
+}
+.learn-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: 240px 1fr; }
+  .in-this-article { display: none; }
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  .left-toc { display: none; }
+  main.content { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-bar"></span>
+        <span>Microsoft Learn</span>
+        <span class="brand-sep">|</span>
+        <span class="brand-product">Microsoft Fabric documentation</span>
+      </a>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="left-toc"><ul>
+<li class="active"><a href="fabric-ontology-agent-overview.html">Overview</a></li>
+<li><a href="fabric-ontology-agent-best-practices.html">Best practices</a></li>
+<li><a href="fabric-ontology-agent-responsible-use.html">Responsible AI FAQ</a></li>
+<li><a href="fabric-ontology-agent-governance-faq.html">Governance &amp; privacy FAQ</a></li>
+<li><a href="fabric-ontology-agent-troubleshooting.html">Troubleshooting</a></li>
+<li><a href="fabric-ontology-agent-billing.html">Billing &amp; cost management</a></li>
+</ul></nav>
+    <main class="content">
+      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology Agent</a> <span class="sep">/</span> <span>Overview</span></nav>
+      <h1 class="page-title">Ontology agent (preview) <span class="preview-badge">PREVIEW</span></h1>
+      <p>The Microsoft Fabric ontology agent is an AI-powered Copilot that helps you build and operate <strong>ontologies</strong> over the data in your Microsoft Fabric workspace by using a chat interface and natural language. The agent helps you:</p>
+<ul>
+<li><strong>Create an ontology</strong>: a guided, end-to-end flow that takes you from an empty ontology item to a published definition grounded in your workspace data.</li>
+<li><strong>Operate your ontology</strong>: once a definition exists, the agent can describe it, query the data behind it by using Kusto Query Language (KQL), SQL, or Graph Query Language (GQL), and improve it as your sources evolve.</li>
+</ul>
+<p>You interact with the agent inside the Fabric ontology item. The agent explains what it's doing, asks for clarification when it needs it, and previews every change before it applies anything to your ontology.</p>
+<div class="alert alert-important">
+  <div class="alert-title">Important</div>
+  <div class="alert-body"><p>The Microsoft Fabric ontology agent is currently in preview.
+See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-terms/">Supplemental Terms of Use for Microsoft Azure Previews</a> for legal terms that apply to features in beta, preview, or otherwise not yet released into general availability.</p></div>
+</div>
+
+<h2 id="what-is-an-ontology">What is an ontology?</h2>
+<p>An ontology is a structured model that defines the entities in a data domain (such as devices, sensors, buildings, flights, or customers), together with their properties and the relationships between them. In Microsoft Fabric, an ontology sits on top of your raw data assets and adds:</p>
+<ul>
+<li><strong>Entity types</strong>: named categories with typed properties and unique identity keys.</li>
+<li><strong>Relationships</strong>: directed connections between entity types.</li>
+<li><strong>Data bindings</strong>: mappings that ground each entity type in a concrete source table and link ontology properties to source columns.</li>
+<li><strong>Contextualizations</strong>: join-key definitions that ground relationships in real data, so you can traverse from one entity to another by using shared keys.</li>
+</ul>
+<p>This structure enables relationship-aware querying and graph traversals that aren't possible against flat tabular data alone. For a deeper introduction to the ontology item itself, see <a href="https://learn.microsoft.com/fabric/iq/ontology/overview">What is ontology (preview)?</a>.</p>
+<h2 id="create-an-ontology">Create an ontology</h2>
+<p>A new ontology item starts empty. The first time you open it, the canvas shows a <strong>Get started</strong> page with two options: <strong>Start with Ontology agent</strong> (recommended) and <strong>Learn more</strong>.</p>
+<figure class="learn-figure">
+  <a href="media/fabric-ontology-agent-overview/create-new-get-started.png" target="_blank" rel="noopener" class="learn-figure-link"><img src="media/fabric-ontology-agent-overview/create-new-get-started.png" alt="Screenshot of an empty Fabric ontology item showing the Get started page with the Start with Ontology agent and Learn more cards." loading="lazy" /></a>
+  <figcaption>Screenshot of an empty Fabric ontology item showing the Get started page with the Start with Ontology agent and Learn more cards. <span class="figure-expand">Click to expand</span></figcaption>
+</figure>
+
+<p>Selecting <strong>Start with Ontology agent</strong> opens the chat panel on the right of the canvas. The agent introduces itself and asks a few clarifying questions to scope the work, such as what the ontology should cover and which sources to prioritize. To make it easier to get going, the agent also offers a few one-click suggestions above the input box. For example, you can jump straight into discovery, walk through the clarification dialogue first, or get an explanation of ontology concepts. The agent generates the suggestions and adapts them to the ontology and the conversation, so the exact wording and which suggestions appear can vary. You can pick a suggestion or type your own message at any time.</p>
+<figure class="learn-figure">
+  <a href="media/fabric-ontology-agent-overview/create-new-agent-clarification.png" target="_blank" rel="noopener" class="learn-figure-link"><img src="media/fabric-ontology-agent-overview/create-new-agent-clarification.png" alt="Screenshot of the ontology agent chat panel with clarifying questions, suggestion chips, and the Plan and Act toggle." loading="lazy" /></a>
+  <figcaption>Screenshot of the ontology agent chat panel with clarifying questions, suggestion chips, and the Plan and Act toggle. <span class="figure-expand">Click to expand</span></figcaption>
+</figure>
+
+<p>From there, the agent walks you through the rest of the creation flow:</p>
+<ol>
+<li><strong>Discover</strong>: explores the workspace items you point it to (or that it discovers automatically) and samples a few rows per table.</li>
+<li><strong>Draft</strong>: proposes an ontology definition (entity types, relationships, data bindings, and contextualizations) grounded in the discovered evidence.</li>
+<li><strong>Validate</strong>: runs structural and grounding checks on the draft and shows the results, including any warnings or errors.</li>
+<li><strong>Apply</strong>: once you switch the agent to <strong>Act mode</strong>, writes the definition to the ontology item and publishes it.</li>
+</ol>
+<p>When you publish the first definition, the canvas replaces the <strong>Get started</strong> page with the Explorer (the list of entity types) and the relationship graph. You continue working with the agent on day-to-day tasks.</p>
+<h2 id="operate-your-ontology">Operate your ontology</h2>
+<p>Once your ontology has a definition, open the ontology item any time and select <strong>Ontology agent</strong> on the toolbar to bring up the chat panel. The agent greets you and offers a few one-click suggestions that adapt to the current ontology. For example, you can ask the agent to explain the ontology, query the data behind it, or propose improvements. The agent generates the suggestions and they can vary across conversations. You can pick a suggestion or type your own question in the <strong>Say something</strong> box.</p>
+<figure class="learn-figure">
+  <a href="media/fabric-ontology-agent-overview/ontology-agent-chat-greeting.png" target="_blank" rel="noopener" class="learn-figure-link"><img src="media/fabric-ontology-agent-overview/ontology-agent-chat-greeting.png" alt="Screenshot of the ontology agent chat panel on an existing ontology with the greeting message, suggestion chips, and the Plan and Act toggle." loading="lazy" /></a>
+  <figcaption>Screenshot of the ontology agent chat panel on an existing ontology with the greeting message, suggestion chips, and the Plan and Act toggle. <span class="figure-expand">Click to expand</span></figcaption>
+</figure>
+
+<p>The day-to-day capabilities the agent supports are described in the following section.</p>
+<h3 id="explain-the-ontology">Explain the ontology</h3>
+<p>Ask the agent to walk you through the current ontology. It reads the definition, summarizes the entity types and relationships, and explains how they're grounded in your workspace data. Use this explanation when you're new to an ontology or when you inherit one from a teammate.</p>
+<h3 id="query-the-ontology">Query the ontology</h3>
+<p>Ask questions over the data behind the ontology in plain language. The agent picks the right engine for each question based on the bindings: KQL for entity types bound to Eventhouse tables, SQL for entity types bound to Lakehouse tables, and GQL for relationship traversals when a GraphModel exists for the ontology. The agent shows you the query it ran, the results (bounded to 100 rows by default; ask for more in the chat), and a short explanation. When a query returns no rows, the agent says so explicitly; it never invents data.</p>
+<h3 id="improve-the-ontology">Improve the ontology</h3>
+<p>Ask the agent to evolve the definition as your sources change: new tables, new columns, schema drift, or new relationships you want to model. The agent proposes a <em>patch</em> that shows changed and stable items side by side, runs validation, and previews the change before anything is applied. Patches preserve stable identifiers (IDs), so downstream queries and integrations keep working. As with the creation flow, the agent applies the patch only after you switch to <strong>Act mode</strong>.</p>
+<h2 id="plan-mode-and-act-mode">Plan mode and Act mode</h2>
+<p>The agent has two interaction modes, controlled by a toggle at the bottom of the chat input:</p>
+<ul>
+<li><strong>Plan mode</strong> (default): the agent can discover, draft, validate, query, explain, and preview, but it doesn't make any changes to your ontology or your workspace. Use this mode to explore and review proposals.</li>
+<li><strong>Act mode</strong>: the agent can apply ontology changes. It always tells you what it's about to do before it does.</li>
+</ul>
+<p>Plan mode is the safe default. Switch to Act mode only when you're ready to let the agent make changes.</p>
+<h2 id="preview-the-draft-in-the-ontology-canvas">Preview the draft in the ontology canvas</h2>
+<p>The chat is the primary surface for working with the agent, but you don't have to read every change in the transcript. When the agent finishes building or revising a draft in Plan mode, it posts a preview action in its chat response. Selecting that action opens a read-only <strong>draft preview</strong> of the entire proposed ontology in the canvas, including entity types, properties, data bindings, relationships, and contextualizations. The preview works in both flows:</p>
+<ul>
+<li><strong>When you're creating a new ontology</strong>: the canvas shows the full proposed structure before anything is applied. You can browse entity types and the relationship graph just like you would for a published ontology.</li>
+<li><strong>When you're improving an existing ontology</strong>: the canvas highlights what changed. Added, edited, and removed items carry visual indicators, and each changed item shows a short explanation of what changed and why. Removed items still appear in the preview so you can confirm the deletions before they happen.</li>
+</ul>
+<p>The preview is read-only. To adjust anything, ask the agent in the chat; the agent produces a revised draft and posts a new preview action you can open. When you switch to Act mode and the agent applies, the preview becomes the published ontology definition.</p>
+<h2 id="work-with-the-ontology-agent">Work with the ontology agent</h2>
+<p>The agent provides a conversational experience for building and operating your ontology. You interact through chat to ask questions, share context, and review proposals in an iterative, flexible way.</p>
+<p>As the agent works, it explains its reasoning: which workspace items it inspected, which tables it sampled, which validation rules it ran, and which evidence it relied on. This transparency helps you understand not only what the agent proposes, but why.</p>
+<p>The conversation continues as your understanding evolves. You can ask follow-up questions to dig deeper, refine a proposal, focus on a specific source, or explore a related angle while keeping the full context of the conversation.</p>
+<h3 id="conversation-lifetime">Conversation lifetime</h3>
+<p>A conversation is tied to a specific Fabric ontology item, and the agent keeps context across turns within that session. During preview, conversation state lives only in your current browser session: refreshing the page or closing the tab ends the conversation, and the next time you open the agent it starts fresh. Conversations also can't continue beyond 24 hours.</p>
+<h3 id="data-retention">Data retention</h3>
+<p>To support service operation, troubleshooting, and quality, the service might retain conversation data for up to <strong>two days</strong> after a conversation ends. Microsoft processes this data according to its privacy, security, and compliance policies, and doesn't use it for other purposes. Microsoft doesn't use conversation data to train foundation models. For details, see the <a href="fabric-ontology-agent-governance-faq.html">Governance, privacy, and AI model FAQ</a>.</p>
+<h2 id="what-the-agent-can-access">What the agent can access</h2>
+<p>The agent uses your identity (delegated access) when it reads or writes data in your Fabric workspace. That means the agent can only see and change what you can see and change. The agent operates within your existing Microsoft Entra ID and Fabric role-based access control (RBAC). For details, see the <a href="fabric-ontology-agent-governance-faq.html">Governance, privacy, and AI model FAQ</a>.</p>
+<h2 id="supported-data-sources">Supported data sources</h2>
+<table>
+<thead>
+<tr>
+<th>Source type</th>
+<th>What the agent does with it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Lakehouse</strong></td>
+<td>Discovers tables and columns; samples rows; binds entity types to Lakehouse tables; executes SQL queries.</td>
+</tr>
+<tr>
+<td><strong>Eventhouse</strong></td>
+<td>Discovers databases, tables, and columns; samples rows; binds entity types to KQL tables (including time-series bindings); executes KQL queries.</td>
+</tr>
+<tr>
+<td><strong>Semantic model</strong></td>
+<td>Reads measures, tables, and relationships through XML for Analysis (XMLA) for business-context grounding. The agent doesn't bind ontology entities directly to semantic models.</td>
+</tr>
+<tr>
+<td><strong>GraphModel</strong></td>
+<td>Executes ISO GQL queries for relationship and traversal questions, when a GraphModel exists for the ontology.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="regions">Regions</h2>
+<p>The Fabric ontology agent is available in some of the Microsoft Fabric regions where the ontology item type is supported.</p>
+<div class="alert alert-note">
+  <div class="alert-title">Note</div>
+  <div class="alert-body"><p>Some processing happens in geographically scoped Microsoft-managed environments rather than per region. For EU-based customers, processing and storage stay within the EU, in alignment with Microsoft's <a href="/privacy/eudb/eu-data-boundary-learn">EU Data Boundary</a> commitments.</p></div>
+</div>
+
+<h2 id="current-limitations">Current limitations</h2>
+<p>Keep in mind these general limitations during preview:</p>
+<ul>
+<li>Each conversation operates on a single ontology in a single workspace. The agent can't span multiple ontologies in one conversation.</li>
+<li>Customer-managed keys (CMK) aren't supported for ontology agent conversation data at this time. Data is encrypted by using Microsoft-managed keys, in alignment with Fabric data protection standards.</li>
+<li>Applying ontology changes adds or updates items in place. There's no built-in rollback; to restore an earlier definition, reapply it.</li>
+</ul>
+<h2 id="responsible-ai">Responsible AI</h2>
+<p>The Microsoft Fabric ontology agent is designed and operated in alignment with Microsoft's Responsible AI principles. For more information, see the <a href="fabric-ontology-agent-responsible-use.html">Responsible AI FAQ for the Fabric ontology agent</a>.</p>
+<h2 id="related-content">Related content</h2>
+<ul>
+<li><a href="https://learn.microsoft.com/fabric/iq/ontology/overview">What is ontology (preview)?</a>: background on the Fabric ontology item the agent works with.</li>
+<li><a href="fabric-ontology-agent-best-practices.html">Best practices for the Fabric ontology agent</a>: prepare your workspace and sources so the agent can do its best work.</li>
+<li><a href="fabric-ontology-agent-governance-faq.html">Governance, privacy, and AI model FAQ</a>: data handling, residency, and compliance.</li>
+<li><a href="fabric-ontology-agent-responsible-use.html">Responsible AI FAQ</a>: how the agent is designed and what to expect.</li>
+<li><a href="fabric-ontology-agent-troubleshooting.html">Troubleshooting</a>: common problems and fixes.</li>
+<li><a href="fabric-ontology-agent-billing.html">Billing and cost management</a>: how the agent is billed.</li>
+</ul>
+    </main>
+    <aside class="in-this-article">
+  <div class="rail-title">In this article</div>
+  <ul>
+<li class="rail-h2"><a href="#what-is-an-ontology">What is an ontology?</a></li>
+<li class="rail-h2"><a href="#create-an-ontology">Create an ontology</a></li>
+<li class="rail-h2"><a href="#operate-your-ontology">Operate your ontology</a></li>
+<li class="rail-h3"><a href="#explain-the-ontology">Explain the ontology</a></li>
+<li class="rail-h3"><a href="#query-the-ontology">Query the ontology</a></li>
+<li class="rail-h3"><a href="#improve-the-ontology">Improve the ontology</a></li>
+<li class="rail-h2"><a href="#plan-mode-and-act-mode">Plan mode and Act mode</a></li>
+<li class="rail-h2"><a href="#preview-the-draft-in-the-ontology-canvas">Preview the draft in the ontology canvas</a></li>
+<li class="rail-h2"><a href="#work-with-the-ontology-agent">Work with the ontology agent</a></li>
+<li class="rail-h3"><a href="#conversation-lifetime">Conversation lifetime</a></li>
+<li class="rail-h3"><a href="#data-retention">Data retention</a></li>
+<li class="rail-h2"><a href="#what-the-agent-can-access">What the agent can access</a></li>
+<li class="rail-h2"><a href="#supported-data-sources">Supported data sources</a></li>
+<li class="rail-h2"><a href="#regions">Regions</a></li>
+<li class="rail-h2"><a href="#current-limitations">Current limitations</a></li>
+<li class="rail-h2"><a href="#responsible-ai">Responsible AI</a></li>
+<li class="rail-h2"><a href="#related-content">Related content</a></li>
+  </ul>
+</aside>
+  </div>
+</body>
+</html>

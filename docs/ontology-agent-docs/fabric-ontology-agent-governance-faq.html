@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ontology agent governance and privacy FAQ (preview) - Microsoft Fabric | Microsoft Learn (preview)</title>
+  <meta name="description" content="Find answers to common governance, data privacy, compliance, and AI model questions for the Microsoft Fabric ontology agent." />
+  <style>
+:root {
+  --ms-blue: #0078d4;
+  --ms-blue-dark: #005a9e;
+  --ms-purple: #5c2d91;
+  --fabric-yellow: #f7b32b;
+  --text: #161616;
+  --text-secondary: #424242;
+  --text-tertiary: #616161;
+  --border: #e1e1e1;
+  --bg: #ffffff;
+  --bg-subtle: #faf9f8;
+  --bg-toc: #f3f2f1;
+  --link: #0078d4;
+  --important-bg: #fff4ce;
+  --important-border: #f7b32b;
+  --note-bg: #f0f6ff;
+  --note-border: #0078d4;
+  --tip-bg: #dff6dd;
+  --tip-border: #107c10;
+  --code-bg: #f3f2f1;
+  --max-content: 1600px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* Top header bar - mimics Microsoft Learn */
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+.site-header-inner {
+  max-width: var(--max-content);
+  margin: 0 auto;
+  padding: 0 24px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.brand {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand-bar {
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: var(--ms-blue);
+  border-radius: 2px;
+}
+.brand-product {
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+.brand-sep {
+  color: var(--text-tertiary);
+  margin: 0 4px;
+}
+.preview-badge {
+  background: var(--ms-purple);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* Three-column layout */
+.layout {
+  max-width: var(--max-content);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 280px 1fr 260px;
+  gap: 0;
+  min-height: calc(100vh - 56px);
+}
+.layout.no-rail { grid-template-columns: 280px 1fr; }
+
+/* Left TOC */
+.left-toc {
+  background: var(--bg-toc);
+  border-right: 1px solid var(--border);
+  padding: 24px 8px 24px 24px;
+  font-size: 14px;
+}
+.left-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.left-toc li {
+  margin: 0;
+}
+.left-toc a {
+  display: block;
+  padding: 8px 12px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 4px;
+}
+.left-toc a:hover {
+  background: rgba(0, 120, 212, 0.08);
+}
+.left-toc li.active a {
+  background: #ffffff;
+  color: var(--ms-blue);
+  font-weight: 600;
+  border-left: 3px solid var(--ms-blue);
+  padding-left: 9px;
+}
+
+/* Main content */
+main.content {
+  padding: 32px 48px;
+  min-width: 0;
+}
+.breadcrumbs {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.breadcrumbs a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.breadcrumbs a:hover { text-decoration: underline; color: var(--link); }
+.breadcrumbs .sep {
+  margin: 0 6px;
+  color: var(--text-tertiary);
+}
+
+h1.page-title {
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+main.content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-top: 40px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+main.content h3 {
+  font-size: 19px;
+  font-weight: 600;
+  margin-top: 32px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+main.content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+main.content p { margin: 12px 0; }
+main.content ul, main.content ol { padding-left: 28px; margin: 12px 0; }
+main.content li { margin: 6px 0; }
+main.content li > p { margin: 4px 0; }
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code {
+  background: var(--code-bg);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: "Cascadia Mono", "Consolas", "Monaco", monospace;
+  font-size: 0.92em;
+  color: #d83b01;
+}
+pre {
+  background: var(--code-bg);
+  padding: 16px;
+  border-radius: 4px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+pre code {
+  background: none;
+  padding: 0;
+  color: var(--text);
+}
+
+table {
+  border-collapse: collapse;
+  margin: 16px 0;
+  width: 100%;
+  font-size: 14px;
+}
+th, td {
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: var(--bg-subtle);
+  font-weight: 600;
+}
+
+/* Alerts */
+.alert {
+  border-left: 4px solid;
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 0 4px 4px 0;
+}
+.alert-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.alert-body p { margin: 4px 0; }
+.alert-body p:first-child { margin-top: 0; }
+.alert-body p:last-child { margin-bottom: 0; }
+.alert-important {
+  background: var(--important-bg);
+  border-color: var(--important-border);
+}
+.alert-important .alert-title { color: #835c00; }
+.alert-note {
+  background: var(--note-bg);
+  border-color: var(--note-border);
+}
+.alert-note .alert-title { color: var(--ms-blue-dark); }
+.alert-tip {
+  background: var(--tip-bg);
+  border-color: var(--tip-border);
+}
+.alert-tip .alert-title { color: #0b6a0b; }
+
+/* Figures */
+.learn-figure {
+  margin: 24px 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px;
+  background: var(--bg-subtle);
+}
+.learn-figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+.learn-figure-link { display: block; }
+.learn-figure figcaption {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  padding: 0 4px;
+}
+.figure-expand {
+  color: var(--link);
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+/* Right "In this article" rail */
+.in-this-article {
+  padding: 32px 16px 32px 24px;
+  font-size: 13px;
+  border-left: 1px solid var(--border);
+  position: sticky;
+  top: 56px;
+  align-self: start;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+.rail-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.in-this-article ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-left: 1px solid var(--border);
+}
+.in-this-article li {
+  margin: 0;
+}
+.in-this-article a {
+  display: block;
+  padding: 4px 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+}
+.in-this-article a:hover {
+  color: var(--link);
+  border-left-color: var(--link);
+}
+.in-this-article .rail-h3 a { padding-left: 24px; font-size: 12.5px; }
+
+/* Landing page cards */
+.lede {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin: 16px 0 32px 0;
+  line-height: 1.5;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.learn-card {
+  display: block;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  text-decoration: none;
+  color: var(--text);
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+.learn-card:hover {
+  border-color: var(--ms-blue);
+  box-shadow: 0 2px 8px rgba(0, 120, 212, 0.12);
+  text-decoration: none;
+}
+.learn-card h3 {
+  margin: 0 0 8px 0;
+  color: var(--ms-blue);
+  font-size: 17px;
+}
+.learn-card p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: 240px 1fr; }
+  .in-this-article { display: none; }
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  .left-toc { display: none; }
+  main.content { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-bar"></span>
+        <span>Microsoft Learn</span>
+        <span class="brand-sep">|</span>
+        <span class="brand-product">Microsoft Fabric documentation</span>
+      </a>
+    </div>
+  </header>
+  <div class="layout">
+    <nav class="left-toc"><ul>
+<li><a href="fabric-ontology-agent-overview.html">Overview</a></li>
+<li><a href="fabric-ontology-agent-best-practices.html">Best practices</a></li>
+<li><a href="fabric-ontology-agent-responsible-use.html">Responsible AI FAQ</a></li>
+<li class="active"><a href="fabric-ontology-agent-governance-faq.html">Governance &amp; privacy FAQ</a></li>
+<li><a href="fabric-ontology-agent-troubleshooting.html">Troubleshooting</a></li>
+<li><a href="fabric-ontology-agent-billing.html">Billing &amp; cost management</a></li>
+</ul></nav>
+    <main class="content">
+      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology Agent</a> <span class="sep">/</span> <span>Governance &amp; privacy FAQ</span></nav>
+      <h1 class="page-title">Ontology agent governance and privacy FAQ (preview) <span class="preview-badge">PREVIEW</span></h1>
+      <p>This article answers common governance, data privacy, compliance, and AI model questions for the Microsoft Fabric ontology agent (preview).</p>
+<div class="alert alert-important">
+  <div class="alert-title">Important</div>
+  <div class="alert-body"><p>The Microsoft Fabric ontology agent is currently in preview.
+See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-terms/">Supplemental Terms of Use for Microsoft Azure Previews</a> for legal terms that apply to features in beta, preview, or otherwise not yet released into general availability.</p></div>
+</div>
+
+<h2 id="data-and-privacy">Data and privacy</h2>
+<p>This section answers questions about data access, retention, and permissions for the ontology agent.</p>
+<h3 id="what-data-does-the-agent-use">What data does the agent use?</h3>
+<p>The agent reads:</p>
+<ul>
+<li><strong>Workspace metadata</strong>: the list of items in the workspace (Lakehouses, Eventhouses, semantic models, ontology items).</li>
+<li><strong>Schema metadata</strong>: table, column, and relationship information from Lakehouses (via SQL), Eventhouses (via the Kusto Query Language, KQL), and semantic models (via XML for Analysis, XMLA).</li>
+<li><strong>Sample data</strong>: a few rows per table during discovery, to understand value shapes.</li>
+<li><strong>The ontology definition itself</strong>: the current entity types, relationships, mappings, and contextualizations.</li>
+<li><strong>Query results</strong>: when you ask the agent to run a query in KQL, SQL, or Graph Query Language (GQL), it sees the rows returned by that query.</li>
+</ul>
+<p>The agent uses <em>your</em> identity and works within your Microsoft Entra ID and Fabric role-based access (RBAC) permissions. The agent can't access any resource or data that you can't access.</p>
+<h3 id="is-my-workspace-data-and-chat-conversation-data-sent-outside-my-tenant">Is my workspace data and chat conversation data sent outside my tenant?</h3>
+<p>Microsoft-managed services process workspace data and conversation content. Microsoft Entra ID and Microsoft Fabric workspace RBAC govern access, so the agent can access only the resources and data the initiating user is authorized to view. Microsoft's privacy and data-processing commitments for commercial services are described in the <a href="https://learn.microsoft.com/compliance/assurance/assurance-privacy">Privacy and data management overview</a> and the Microsoft Fabric data protection guidance.</p>
+<h3 id="what-permissions-does-the-agent-use-to-access-the-data">What permissions does the agent use to access the data?</h3>
+<p>The agent accesses data by using the user's identity. Microsoft Entra ID issues short-lived access tokens for each Fabric API call the agent makes. The agent never escalates privileges or impersonates another user.</p>
+<h3 id="how-does-the-agent-retain-data">How does the agent retain data?</h3>
+<p>The agent might retain limited service data to support the service and user interactions. Any retention is scoped, access-controlled, and time-bound. The agent handles three categories of data (conversation data, ontology data, and telemetry data), each with different retention behavior.</p>
+<ul>
+<li>
+<p><strong>Conversation data</strong> (chat messages, drafts, validation results, evidence cache):</p>
+</li>
+<li>
+<p>Includes user prompts, agent responses, the in-progress draft, validation summaries, and cached discovery evidence.</p>
+</li>
+<li>
+<p>Stored regionally and retained for up to <strong>two days</strong> after the conversation ends.</p>
+</li>
+<li>
+<p>Automatically deleted after two days.</p>
+</li>
+<li>
+<p><strong>Ontology data</strong> (entity types, relationships, mappings, contextualizations):</p>
+</li>
+<li>
+<p>Stored as the definition of the Fabric ontology item itself, in your workspace.</p>
+</li>
+<li>
+<p>Lives as long as the ontology item lives; deletion of the ontology item deletes the definition.</p>
+</li>
+<li>
+<p>The agent doesn't keep a separate copy.</p>
+</li>
+<li>
+<p><strong>Source data</strong> (Lakehouse rows, Eventhouse events, semantic model values, query results):</p>
+</li>
+<li>
+<p>The agent doesn't retain extra copies of source data.</p>
+</li>
+<li>
+<p>It only reads data that already exists in your Fabric workspace, based on the user's permissions (RBAC).</p>
+</li>
+</ul>
+<h3 id="who-can-access-conversations-and-applied-ontology-changes">Who can access conversations and applied ontology changes?</h3>
+<p>Conversations are private to the user who starts them. Other users can't see another user's chat.  </p>
+<p>Applied ontology changes are part of the Fabric ontology item and follow the workspace's standard RBAC model. Any user with the appropriate workspace role can read the published ontology definition. Only users with permission to modify the ontology item can apply changes.</p>
+<h2 id="compliance-and-data-residency">Compliance and data residency</h2>
+<p>This section covers enterprise compliance standards and data residency controls.</p>
+<h3 id="is-the-agent-compliant-with-enterprise-standards">Is the agent compliant with enterprise standards?</h3>
+<p>Yes. The Fabric ontology agent follows Microsoft's <a href="https://www.microsoft.com/ai/principles-and-approach">Responsible AI principles and approach</a>. Microsoft also publishes the <a href="https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/final/en-us/microsoft-brand/documents/Microsoft-Responsible-AI-Standard-General-Requirements.pdf">Microsoft Responsible AI Standard, v2</a>. It describes the company's framework for building and reviewing AI systems. The framework covers:</p>
+<ul>
+<li>Privacy and security</li>
+<li>Transparency</li>
+<li>Reliability and safety</li>
+<li>Inclusiveness</li>
+<li>Fairness</li>
+<li>Accountability</li>
+</ul>
+<p>For the AI components, Microsoft also provides <a href="https://learn.microsoft.com/azure/foundry/responsible-use-of-ai-overview">Responsible AI guidance for Microsoft Foundry</a> and <a href="https://learn.microsoft.com/azure/foundry/responsible-ai/openai/transparency-note">transparency notes for Azure OpenAI</a>.</p>
+<h3 id="can-i-control-where-my-data-is-processed">Can I control where my data is processed?</h3>
+<p>The Fabric ontology agent is a Microsoft Fabric service, and data processing follows the same regional and compliance frameworks as the rest of Microsoft Fabric. For customers in supported EU regions, processing and storage remain within the EU, in alignment with Microsoft's <a href="https://learn.microsoft.com/privacy/eudb/eu-data-boundary-learn">EU Data Boundary</a> commitments. For supported regions, see <a href="fabric-ontology-agent-overview.html#regions">Regions</a>.</p>
+<h2 id="model-and-data-usage">Model and data usage</h2>
+<p>This section covers the AI models the agent uses and how your data is handled during processing.</p>
+<h3 id="what-ai-models-does-the-agent-use">What AI models does the agent use?</h3>
+<p><strong>Azure OpenAI Service</strong> provides the large language models the agent uses to plan its work, draft ontology proposals, and write queries. Model processing occurs within Microsoft-managed infrastructure and follows Azure security and compliance practices. The specific model version might evolve over time. The team prefers the latest supported model that meets quality and latency targets.</p>
+<h3 id="is-my-data-used-to-train-models">Is my data used to train models?</h3>
+<p>The service doesn't use customer data to train models.</p>
+<h3 id="can-we-control-which-data-is-shared-with-the-model">Can we control which data is shared with the model?</h3>
+<p>Yes, you can control data sharing implicitly through the agent's scope. The agent only sends to the model:</p>
+<ul>
+<li>The conversation messages (your prompts, the agent's prior turns).</li>
+<li>Schema metadata it discovered (table names, column names, relationship names).</li>
+<li>A few sample rows per table during discovery.</li>
+<li>Query results returned by tools the agent invoked.</li>
+</ul>
+<p>It doesn't send the entire contents of your Lakehouses or Eventhouses to the model. You can further limit scope by:</p>
+<ul>
+<li>Restricting your own workspace permissions (the agent is bounded by your access).</li>
+<li>Choosing which sources to discover, rather than letting the agent discover everything automatically.</li>
+</ul>
+<p>You can't selectively exclude specific tables or columns from a source that the agent already has permission to read. If you need that level of control, restrict access at the source level.</p>
+<h2 id="reliability-and-safety">Reliability and safety</h2>
+<p>This section addresses questions about the accuracy, security, and guardrails of the agent.</p>
+<h3 id="how-do-you-prevent-the-model-from-producing-incorrect-ontology-proposals">How do you prevent the model from producing incorrect ontology proposals?</h3>
+<p>The agent follows several layered controls:</p>
+<ul>
+<li><strong>Grounding</strong>: Every proposal cites the workspace items, tables, and columns it derived from. The agent is explicitly instructed not to fabricate entities or relationships.</li>
+<li><strong>Validation</strong>: Before any apply, the agent runs structural and grounding validation on the draft, then surfaces the results. Validation checks the name format, missing bindings, duplicate names, and contextualization completeness.</li>
+<li><strong>Quality checks</strong>: The agent reviews its own work against grounding and scope rules before presenting findings to you, and revises if those checks fail.</li>
+<li><strong>Plan/Act mode</strong>: You control changes through an explicit mode toggle. The agent can't apply changes in Plan mode, period.</li>
+</ul>
+<h3 id="what-guarantees-do-we-have-on-the-accuracy-of-the-results">What guarantees do we have on the accuracy of the results?</h3>
+<p>Results are AI-generated and might not always be correct or complete. Customers should review and validate proposals before applying changes, and treat the agent's recommendations as assistive guidance rather than definitive conclusions. Microsoft continuously improves the system through testing and validation. Users are encouraged to report issues or inaccuracies through in-product feedback.</p>
+<h3 id="how-can-we-validate-or-verify-the-agents-conclusions">How can we validate or verify the agent's conclusions?</h3>
+<p>The agent surfaces:</p>
+<ul>
+<li>The workspace items it inspected and the tables it sampled.</li>
+<li>The validation results for every draft and patch.</li>
+<li>The tool calls it made, including the queries it ran when answering your questions.</li>
+<li>The per-item status of every change the agent applied.</li>
+</ul>
+<p>You can rerun queries the agent showed you to verify them independently.</p>
+<h3 id="how-is-the-model-secured-from-misuse-or-malicious-prompts">How is the model secured from misuse or malicious prompts?</h3>
+<p>The agent operates within Microsoft Fabric service boundaries and existing access controls. It can only access data and perform actions that you already have permission to use. <strong>Plan/Act mode</strong> gates the agent: in Plan mode, it can't make changes to your ontology; it can only discover, draft, validate, preview, query, and explain. Changes are only possible after you explicitly switch to Act mode. The service aligns with Microsoft's Responsible AI initiative to reduce misuse and the impact of malicious prompts.</p>
+<h3 id="is-there-formal-documentation-describing-how-the-agent-is-secured">Is there formal documentation describing how the agent is secured?</h3>
+<p>Responsible AI and security guidance for the Fabric ontology agent aligns with Microsoft's broader <a href="https://www.microsoft.com/ai/principles-and-approach">Responsible AI approach</a>, <a href="https://learn.microsoft.com/azure/foundry/responsible-use-of-ai-overview">Responsible AI guidance for Microsoft Foundry</a>, and the <a href="https://learn.microsoft.com/azure/foundry/responsible-ai/openai/transparency-note">Transparency Note for Azure OpenAI in Microsoft Foundry Models</a>. For data handling, privacy, and model-use details, see <a href="https://learn.microsoft.com/azure/foundry/responsible-ai/openai/data-privacy">Data, privacy, and security for Azure Direct Models in Microsoft Foundry</a>.</p>
+<h3 id="can-we-enforce-guardrails-on-what-the-agent-is-allowed-to-do-or-say">Can we enforce guardrails on what the agent is allowed to do or say?</h3>
+<p>Built-in service controls, Responsible AI practices, and Fabric platform governance govern the agent's behavior.</p>
+<ul>
+<li>System-level controls define how the agent operates (Plan/Act mode gating, grounding rules, structural validation, and internal quality checks).</li>
+<li>Organizational controls (workspace RBAC, capacity settings, tenant Copilot controls) define what data the agent can access and what changes it can make.</li>
+</ul>
+<h2 id="access-and-control">Access and control</h2>
+<p>This section covers agent permissions, disabling the agent, and customer responsibilities.</p>
+<h3 id="what-permissions-does-the-agent-use">What permissions does the agent use?</h3>
+<p>In interactive scenarios, the agent runs under your identity and Fabric workspace RBAC permissions. There are no autonomous scenarios for the ontology agent today; every action requires an in-conversation user driving it.</p>
+<h3 id="what-is-my-responsibility-when-using-the-agent">What is my responsibility when using the agent?</h3>
+<p>You're responsible for configuring access, validating results, and governing usage within your environment.</p>
+<ul>
+<li>
+<p>Manage access control through Fabric workspace RBAC and Microsoft Entra ID.</p>
+</li>
+<li>
+<p>Review and validate ontology drafts, patches, and query results before acting on them.</p>
+</li>
+<li>
+<p>Use Plan mode to preview, and switch to Act mode only when you're ready to apply changes.</p>
+</li>
+<li>
+<p>Align usage with your organization's internal policies and compliance requirements.</p>
+</li>
+</ul>
+<h3 id="are-results-deterministic">Are results deterministic?</h3>
+<p>Not always. The agent uses AI and might produce different drafts, patches, or queries on different runs against the same data. Validation, grounding rules, and internal quality checks keep results within bounded shapes, but expect natural variation between runs.</p>
+<h2 id="related-content">Related content</h2>
+<ul>
+<li><a href="fabric-ontology-agent-overview.html">Microsoft Fabric ontology agent overview</a></li>
+<li><a href="fabric-ontology-agent-responsible-use.html">Responsible AI FAQ</a></li>
+<li><a href="fabric-ontology-agent-best-practices.html">Best practices</a></li>
+<li><a href="fabric-ontology-agent-troubleshooting.html">Troubleshooting</a></li>
+<li><a href="https://learn.microsoft.com/fabric/get-started/copilot-fabric-overview">Manage Copilot in Microsoft Fabric</a></li>
+</ul>
+    </main>
+    <aside class="in-this-article">
+  <div class="rail-title">In this article</div>
+  <ul>
+<li class="rail-h2"><a href="#data-and-privacy">Data and privacy</a></li>
+<li class="rail-h3"><a href="#what-data-does-the-agent-use">What data does the agent use?</a></li>
+<li class="rail-h3"><a href="#is-my-workspace-data-and-chat-conversation-data-sent-outside-my-tenant">Is my workspace data and chat conversation data sent outside my tenant?</a></li>
+<li class="rail-h3"><a href="#what-permissions-does-the-agent-use-to-access-the-data">What permissions does the agent use to access the data?</a></li>
+<li class="rail-h3"><a href="#how-does-the-agent-retain-data">How does the agent retain data?</a></li>
+<li class="rail-h3"><a href="#who-can-access-conversations-and-applied-ontology-changes">Who can access conversations and applied ontology changes?</a></li>
+<li class="rail-h2"><a href="#compliance-and-data-residency">Compliance and data residency</a></li>
+<li class="rail-h3"><a href="#is-the-agent-compliant-with-enterprise-standards">Is the agent compliant with enterprise standards?</a></li>
+<li class="rail-h3"><a href="#can-i-control-where-my-data-is-processed">Can I control where my data is processed?</a></li>
+<li class="rail-h2"><a href="#model-and-data-usage">Model and data usage</a></li>
+<li class="rail-h3"><a href="#what-ai-models-does-the-agent-use">What AI models does the agent use?</a></li>
+<li class="rail-h3"><a href="#is-my-data-used-to-train-models">Is my data used to train models?</a></li>
+<li class="rail-h3"><a href="#can-we-control-which-data-is-shared-with-the-model">Can we control which data is shared with the model?</a></li>
+<li class="rail-h2"><a href="#reliability-and-safety">Reliability and safety</a></li>
+<li class="rail-h3"><a href="#how-do-you-prevent-the-model-from-producing-incorrect-ontology-proposals">How do you prevent the model from producing incorrect ontology proposals?</a></li>
+<li class="rail-h3"><a href="#what-guarantees-do-we-have-on-the-accuracy-of-the-results">What guarantees do we have on the accuracy of the results?</a></li>
+<li class="rail-h3"><a href="#how-can-we-validate-or-verify-the-agents-conclusions">How can we validate or verify the agent&#x27;s conclusions?</a></li>
+<li class="rail-h3"><a href="#how-is-the-model-secured-from-misuse-or-malicious-prompts">How is the model secured from misuse or malicious prompts?</a></li>
+<li class="rail-h3"><a href="#is-there-formal-documentation-describing-how-the-agent-is-secured">Is there formal documentation describing how the agent is secured?</a></li>
+<li class="rail-h3"><a href="#can-we-enforce-guardrails-on-what-the-agent-is-allowed-to-do-or-say">Can we enforce guardrails on what the agent is allowed to do or say?</a></li>
+<li class="rail-h2"><a href="#access-and-control">Access and control</a></li>
+<li class="rail-h3"><a href="#what-permissions-does-the-agent-use">What permissions does the agent use?</a></li>
+<li class="rail-h3"><a href="#what-is-my-responsibility-when-using-the-agent">What is my responsibility when using the agent?</a></li>
+<li class="rail-h3"><a href="#are-results-deterministic">Are results deterministic?</a></li>
+<li class="rail-h2"><a href="#related-content">Related content</a></li>
+  </ul>
+</aside>
+  </div>
+</body>
+</html>
