@@ -405,7 +405,7 @@ th {
 <li><a href="fabric-ontology-agent-billing.html">Billing &amp; cost management</a></li>
 </ul></nav>
     <main class="content">
-      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology Agent</a> <span class="sep">/</span> <span>Troubleshooting</span></nav>
+      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology agent</a> <span class="sep">/</span> <span>Troubleshooting</span></nav>
       <h1 class="page-title">Troubleshoot the ontology agent (preview) <span class="preview-badge">PREVIEW</span></h1>
       <p>This article provides troubleshooting guidance for common issues with the <a href="fabric-ontology-agent-overview.html">Microsoft Fabric ontology agent</a>.</p>
 <h2 id="authorization-and-access">Authorization and access</h2>
@@ -415,6 +415,19 @@ th {
 <li><strong>You don't have permission on that source.</strong> Confirm that your workspace role grants at least read access to the Lakehouse, Eventhouse, or semantic model. If the source is in a different workspace (via shortcut), check your role on that workspace too.</li>
 <li><strong>The source is in a different workspace and not shortcutted in.</strong> The agent only discovers items in the workspace where the ontology lives. Move or shortcut the source into the ontology's workspace.</li>
 </ul>
+<h3 id="i-can-query-an-ontology-but-cant-create-improve-or-apply-changes">I can query an ontology but can't create, improve, or apply changes</h3>
+<p>You probably have Viewer access. Viewers can explain and query an existing ontology, but creating the first definition, improving the ontology, and applying changes require Contributor or higher permissions. Ask a workspace administrator to update your role if you need to make changes.</p>
+<h2 id="file-uploads">File uploads</h2>
+<h3 id="a-file-wont-attach">A file won't attach</h3>
+<p>Check these limits:</p>
+<ul>
+<li>Each file must be no larger than 5 MB.</li>
+<li>A conversation can contain up to 10 attached files.</li>
+<li>The filename must be 60 characters or fewer and can't contain path separators, <code>..</code>, or control characters.</li>
+<li>Use a supported text-based, PDF, or image format.</li>
+</ul>
+<h3 id="the-agent-doesnt-use-an-attached-file">The agent doesn't use an attached file</h3>
+<p>Refer to the exact filename in your prompt and explain what information the agent should use from it. Files are scoped to the current conversation. If you refresh the page or start a new conversation, attach the file again.</p>
 <h2 id="creating-a-new-ontology">Creating a new ontology</h2>
 <h3 id="the-agents-draft-has-too-few-or-too-many-entity-types">The agent's draft has too few or too many entity types</h3>
 <ul>
@@ -438,7 +451,7 @@ th {
 </ul>
 <h2 id="planact-mode">Plan/Act mode</h2>
 <h3 id="nothing-happens-when-i-ask-the-agent-to-apply-changes">Nothing happens when I ask the agent to apply changes</h3>
-<p>You're probably in <strong>Plan mode</strong>. Plan mode is the default and it explicitly prevents the agent from making changes. Switch the chat to <strong>Act mode</strong> and ask again. The agent tells you what it's about to apply before applying.</p>
+<p>You're probably in <strong>Plan mode</strong>. Plan mode is the default and it explicitly prevents the agent from making changes. Switch the chat to <strong>Act mode</strong> and ask again. The agent tells you what it's about to apply before applying. If you have Viewer access, the server blocks write operations even when Act mode is selected.</p>
 <h2 id="aimodel-issues">AI/model issues</h2>
 <h3 id="the-agent-stopped-responding-mid-turn-or-returned-an-error">The agent stopped responding mid-turn or returned an error</h3>
 <p>The agent depends on Azure OpenAI for reasoning. Occasionally the model service has problems. The simplest recovery is to send <strong>try again</strong> as a new message in the same chat: the conversation context is preserved and the agent retries the failed turn. If the failure persists, wait a few minutes before retrying. During preview, conversation state lives only in your current browser session, so refreshing the page clears the chat and any in-progress draft. Changes you already applied (in Act mode) are part of the ontology item and remain intact.</p>
@@ -468,6 +481,10 @@ th {
   <ul>
 <li class="rail-h2"><a href="#authorization-and-access">Authorization and access</a></li>
 <li class="rail-h3"><a href="#the-agent-says-it-cant-access-a-lakehouse-eventhouse-or-semantic-model">The agent says it can&#x27;t access a Lakehouse, Eventhouse, or semantic model</a></li>
+<li class="rail-h3"><a href="#i-can-query-an-ontology-but-cant-create-improve-or-apply-changes">I can query an ontology but can&#x27;t create, improve, or apply changes</a></li>
+<li class="rail-h2"><a href="#file-uploads">File uploads</a></li>
+<li class="rail-h3"><a href="#a-file-wont-attach">A file won&#x27;t attach</a></li>
+<li class="rail-h3"><a href="#the-agent-doesnt-use-an-attached-file">The agent doesn&#x27;t use an attached file</a></li>
 <li class="rail-h2"><a href="#creating-a-new-ontology">Creating a new ontology</a></li>
 <li class="rail-h3"><a href="#the-agents-draft-has-too-few-or-too-many-entity-types">The agent&#x27;s draft has too few or too many entity types</a></li>
 <li class="rail-h2"><a href="#working-with-an-existing-ontology">Working with an existing ontology</a></li>

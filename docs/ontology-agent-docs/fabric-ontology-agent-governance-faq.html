@@ -405,7 +405,7 @@ th {
 <li><a href="fabric-ontology-agent-billing.html">Billing &amp; cost management</a></li>
 </ul></nav>
     <main class="content">
-      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology Agent</a> <span class="sep">/</span> <span>Governance &amp; privacy FAQ</span></nav>
+      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology agent</a> <span class="sep">/</span> <span>Governance &amp; privacy FAQ</span></nav>
       <h1 class="page-title">Ontology agent governance and privacy FAQ (preview) <span class="preview-badge">PREVIEW</span></h1>
       <p>This article answers common governance, data privacy, compliance, and AI model questions for the Microsoft Fabric ontology agent (preview).</p>
 <div class="alert alert-important">
@@ -423,7 +423,8 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 <li><strong>Schema metadata</strong>: table, column, and relationship information from Lakehouses (via SQL), Eventhouses (via the Kusto Query Language, KQL), and semantic models (via XML for Analysis, XMLA).</li>
 <li><strong>Sample data</strong>: a few rows per table during discovery, to understand value shapes.</li>
 <li><strong>The ontology definition itself</strong>: the current entity types, relationships, mappings, and contextualizations.</li>
-<li><strong>Query results</strong>: when you ask the agent to run a query in KQL, SQL, or Graph Query Language (GQL), it sees the rows returned by that query.</li>
+<li><strong>Query results</strong>: when you ask the agent to run a query in Data Analysis Expressions (DAX), KQL, SQL, or Graph Query Language (GQL), it sees the rows returned by that query.</li>
+<li><strong>Files you attach</strong>: the agent can read files that you explicitly add to the current conversation and use their content as supporting context.</li>
 </ul>
 <p>The agent uses <em>your</em> identity and works within your Microsoft Entra ID and Fabric role-based access (RBAC) permissions. The agent can't access any resource or data that you can't access.</p>
 <h3 id="is-my-workspace-data-and-chat-conversation-data-sent-outside-my-tenant">Is my workspace data and chat conversation data sent outside my tenant?</h3>
@@ -434,10 +435,10 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 <p>The agent might retain limited service data to support the service and user interactions. Any retention is scoped, access-controlled, and time-bound. The agent handles three categories of data (conversation data, ontology data, and telemetry data), each with different retention behavior.</p>
 <ul>
 <li>
-<p><strong>Conversation data</strong> (chat messages, drafts, validation results, evidence cache):</p>
+<p><strong>Conversation data</strong> (chat messages, drafts, validation results, evidence cache, uploaded files):</p>
 </li>
 <li>
-<p>Includes user prompts, agent responses, the in-progress draft, validation summaries, and cached discovery evidence.</p>
+<p>Includes user prompts, agent responses, the in-progress draft, validation summaries, cached discovery evidence, and uploaded file content.</p>
 </li>
 <li>
 <p>Stored regionally and retained for up to <strong>two days</strong> after the conversation ends.</p>
@@ -468,8 +469,8 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 </li>
 </ul>
 <h3 id="who-can-access-conversations-and-applied-ontology-changes">Who can access conversations and applied ontology changes?</h3>
-<p>Conversations are private to the user who starts them. Other users can't see another user's chat.  </p>
-<p>Applied ontology changes are part of the Fabric ontology item and follow the workspace's standard RBAC model. Any user with the appropriate workspace role can read the published ontology definition. Only users with permission to modify the ontology item can apply changes.</p>
+<p>Conversations are private to the user who starts them. Other users can't see another user's chat.</p>
+<p>Applied ontology changes are part of the Fabric ontology item and follow the workspace's standard RBAC model. Users with Viewer access can explain and query an existing ontology, but they can't create the first definition, improve the ontology, or apply changes. Only users with Contributor or higher permissions can modify the ontology item.</p>
 <h2 id="compliance-and-data-residency">Compliance and data residency</h2>
 <p>This section covers enterprise compliance standards and data residency controls.</p>
 <h3 id="is-the-agent-compliant-with-enterprise-standards">Is the agent compliant with enterprise standards?</h3>
@@ -484,7 +485,7 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 </ul>
 <p>For the AI components, Microsoft also provides <a href="https://learn.microsoft.com/azure/foundry/responsible-use-of-ai-overview">Responsible AI guidance for Microsoft Foundry</a> and <a href="https://learn.microsoft.com/azure/foundry/responsible-ai/openai/transparency-note">transparency notes for Azure OpenAI</a>.</p>
 <h3 id="can-i-control-where-my-data-is-processed">Can I control where my data is processed?</h3>
-<p>The Fabric ontology agent is a Microsoft Fabric service, and data processing follows the same regional and compliance frameworks as the rest of Microsoft Fabric. For customers in supported EU regions, processing and storage remain within the EU, in alignment with Microsoft's <a href="https://learn.microsoft.com/privacy/eudb/eu-data-boundary-learn">EU Data Boundary</a> commitments. For supported regions, see <a href="fabric-ontology-agent-overview.html#regions">Regions</a>.</p>
+<p>During public preview, data in transit might be processed outside the geography where your Microsoft Fabric capacity is located. The Fabric ontology agent doesn't maintain the <a href="https://learn.microsoft.com/privacy/eudb/eu-data-boundary-learn">EU Data Boundary</a> during public preview. For supported regions, see <a href="fabric-ontology-agent-overview.html#regions">Regions</a>.</p>
 <h2 id="model-and-data-usage">Model and data usage</h2>
 <p>This section covers the AI models the agent uses and how your data is handled during processing.</p>
 <h3 id="what-ai-models-does-the-agent-use">What AI models does the agent use?</h3>
@@ -498,11 +499,13 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 <li>Schema metadata it discovered (table names, column names, relationship names).</li>
 <li>A few sample rows per table during discovery.</li>
 <li>Query results returned by tools the agent invoked.</li>
+<li>The content of files you attach when the agent reads those files for the conversation.</li>
 </ul>
-<p>It doesn't send the entire contents of your Lakehouses or Eventhouses to the model. You can further limit scope by:</p>
+<p>It doesn't send the entire contents of your Lakehouses or Eventhouses to the model. A file that you explicitly attach can be sent in full when the agent reads it. You can further limit scope by:</p>
 <ul>
 <li>Restricting your own workspace permissions (the agent is bounded by your access).</li>
 <li>Choosing which sources to discover, rather than letting the agent discover everything automatically.</li>
+<li>Attaching only files that are relevant to the current task.</li>
 </ul>
 <p>You can't selectively exclude specific tables or columns from a source that the agent already has permission to read. If you need that level of control, restrict access at the source level.</p>
 <h2 id="reliability-and-safety">Reliability and safety</h2>

@@ -405,12 +405,12 @@ th {
 <li><a href="fabric-ontology-agent-billing.html">Billing &amp; cost management</a></li>
 </ul></nav>
     <main class="content">
-      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology Agent</a> <span class="sep">/</span> <span>Overview</span></nav>
+      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology agent</a> <span class="sep">/</span> <span>Overview</span></nav>
       <h1 class="page-title">Ontology agent (preview) <span class="preview-badge">PREVIEW</span></h1>
       <p>The Microsoft Fabric ontology agent is an AI-powered Copilot that helps you build and operate <strong>ontologies</strong> over the data in your Microsoft Fabric workspace by using a chat interface and natural language. The agent helps you:</p>
 <ul>
 <li><strong>Create an ontology</strong>: a guided, end-to-end flow that takes you from an empty ontology item to a published definition grounded in your workspace data.</li>
-<li><strong>Operate your ontology</strong>: once a definition exists, the agent can describe it, query the data behind it by using Kusto Query Language (KQL), SQL, or Graph Query Language (GQL), and improve it as your sources evolve.</li>
+<li><strong>Operate your ontology</strong>: once a definition exists, the agent can describe it, query the data behind it by using Data Analysis Expressions (DAX), Kusto Query Language (KQL), SQL, or Graph Query Language (GQL), and improve it as your sources evolve.</li>
 </ul>
 <p>You interact with the agent inside the Fabric ontology item. The agent explains what it's doing, asks for clarification when it needs it, and previews every change before it applies anything to your ontology.</p>
 <div class="alert alert-important">
@@ -436,6 +436,7 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 </figure>
 
 <p>Selecting <strong>Start with Ontology agent</strong> opens the chat panel on the right of the canvas. The agent introduces itself and asks a few clarifying questions to scope the work, such as what the ontology should cover and which sources to prioritize. To make it easier to get going, the agent also offers a few one-click suggestions above the input box. For example, you can jump straight into discovery, walk through the clarification dialogue first, or get an explanation of ontology concepts. The agent generates the suggestions and adapts them to the ontology and the conversation, so the exact wording and which suggestions appear can vary. You can pick a suggestion or type your own message at any time.</p>
+<p>If your request or discovered sources span unrelated business domains, the agent asks whether to include all topics, focus on one primary domain, or start with a smaller subgroup. You can revise the scope at any time before you apply the draft.</p>
 <figure class="learn-figure">
   <a href="media/fabric-ontology-agent-overview/create-new-agent-clarification.png" target="_blank" rel="noopener" class="learn-figure-link"><img src="media/fabric-ontology-agent-overview/create-new-agent-clarification.png" alt="Screenshot of the ontology agent chat panel with clarifying questions, suggestion chips, and the Plan and Act toggle." loading="lazy" /></a>
   <figcaption>Screenshot of the ontology agent chat panel with clarifying questions, suggestion chips, and the Plan and Act toggle. <span class="figure-expand">Click to expand</span></figcaption>
@@ -448,7 +449,7 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 <li><strong>Validate</strong>: runs structural and grounding checks on the draft and shows the results, including any warnings or errors.</li>
 <li><strong>Apply</strong>: once you switch the agent to <strong>Act mode</strong>, writes the definition to the ontology item and publishes it.</li>
 </ol>
-<p>When you publish the first definition, the canvas replaces the <strong>Get started</strong> page with the Explorer (the list of entity types) and the relationship graph. You continue working with the agent on day-to-day tasks.</p>
+<p>When you publish the first definition, the canvas replaces the <strong>Get started</strong> page with the Explorer (the list of entity types) and the relationship graph. The agent then offers a <strong>Test the ontology</strong> suggestion that generates five representative questions and answers them by querying the bound data. You can also continue working with the agent on other day-to-day tasks.</p>
 <h2 id="operate-your-ontology">Operate your ontology</h2>
 <p>Once your ontology has a definition, open the ontology item any time and select <strong>Ontology agent</strong> on the toolbar to bring up the chat panel. The agent greets you and offers a few one-click suggestions that adapt to the current ontology. For example, you can ask the agent to explain the ontology, query the data behind it, or propose improvements. The agent generates the suggestions and they can vary across conversations. You can pick a suggestion or type your own question in the <strong>Say something</strong> box.</p>
 <figure class="learn-figure">
@@ -460,7 +461,7 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 <h3 id="explain-the-ontology">Explain the ontology</h3>
 <p>Ask the agent to walk you through the current ontology. It reads the definition, summarizes the entity types and relationships, and explains how they're grounded in your workspace data. Use this explanation when you're new to an ontology or when you inherit one from a teammate.</p>
 <h3 id="query-the-ontology">Query the ontology</h3>
-<p>Ask questions over the data behind the ontology in plain language. The agent picks the right engine for each question based on the bindings: KQL for entity types bound to Eventhouse tables, SQL for entity types bound to Lakehouse tables, and GQL for relationship traversals when a GraphModel exists for the ontology. The agent shows you the query it ran, the results (bounded to 100 rows by default; ask for more in the chat), and a short explanation. When a query returns no rows, the agent says so explicitly; it never invents data.</p>
+<p>Ask questions over the data behind the ontology in plain language. The agent picks the right engine for each question based on the available grounding: KQL for entity types bound to Eventhouse tables, SQL for entity types bound to Lakehouse tables, DAX for semantic-model tables, columns, aggregations, and measures, and GQL for relationship traversals when a GraphModel exists for the ontology. The agent shows you the query it ran, bounded results, and a short explanation. KQL, SQL, and GQL return up to 1,000 rows by default; DAX returns up to 200. When a query returns no rows, the agent says so explicitly; it never invents data.</p>
 <h3 id="improve-the-ontology">Improve the ontology</h3>
 <p>Ask the agent to evolve the definition as your sources change: new tables, new columns, schema drift, or new relationships you want to model. The agent proposes a <em>patch</em> that shows changed and stable items side by side, runs validation, and previews the change before anything is applied. Patches preserve stable identifiers (IDs), so downstream queries and integrations keep working. As with the creation flow, the agent applies the patch only after you switch to <strong>Act mode</strong>.</p>
 <h2 id="plan-mode-and-act-mode">Plan mode and Act mode</h2>
@@ -481,12 +482,15 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 <p>The agent provides a conversational experience for building and operating your ontology. You interact through chat to ask questions, share context, and review proposals in an iterative, flexible way.</p>
 <p>As the agent works, it explains its reasoning: which workspace items it inspected, which tables it sampled, which validation rules it ran, and which evidence it relied on. This transparency helps you understand not only what the agent proposes, but why.</p>
 <p>The conversation continues as your understanding evolves. You can ask follow-up questions to dig deeper, refine a proposal, focus on a specific source, or explore a related angle while keeping the full context of the conversation.</p>
+<h3 id="add-files-to-the-conversation">Add files to the conversation</h3>
+<p>Use the attachment button in the chat input to provide supporting context, such as business requirements, data dictionaries, sample mappings, or schema notes. The agent can read common text-based files, PDFs, and common image formats, and use their content to improve ontology names, entity selection, relationships, and explanations.</p>
+<p>Each conversation supports up to 10 attached files, with a maximum size of 5 MB per file. Files are available only in the conversation where you attach them. If you want the agent to use a particular file, refer to its filename and explain how it relates to your request.</p>
 <h3 id="conversation-lifetime">Conversation lifetime</h3>
 <p>A conversation is tied to a specific Fabric ontology item, and the agent keeps context across turns within that session. During preview, conversation state lives only in your current browser session: refreshing the page or closing the tab ends the conversation, and the next time you open the agent it starts fresh. Conversations also can't continue beyond 24 hours.</p>
 <h3 id="data-retention">Data retention</h3>
 <p>To support service operation, troubleshooting, and quality, the service might retain conversation data for up to <strong>two days</strong> after a conversation ends. Microsoft processes this data according to its privacy, security, and compliance policies, and doesn't use it for other purposes. Microsoft doesn't use conversation data to train foundation models. For details, see the <a href="fabric-ontology-agent-governance-faq.html">Governance, privacy, and AI model FAQ</a>.</p>
 <h2 id="what-the-agent-can-access">What the agent can access</h2>
-<p>The agent uses your identity (delegated access) when it reads or writes data in your Fabric workspace. That means the agent can only see and change what you can see and change. The agent operates within your existing Microsoft Entra ID and Fabric role-based access control (RBAC). For details, see the <a href="fabric-ontology-agent-governance-faq.html">Governance, privacy, and AI model FAQ</a>.</p>
+<p>The agent uses your identity (delegated access) when it reads or writes data in your Fabric workspace. That means the agent can only see and change what you can see and change. Users with Viewer access can explain and query an existing ontology in read-only mode. Creating the first definition, improving an ontology, and applying changes require Contributor or higher permissions. The agent operates within your existing Microsoft Entra ID and Fabric role-based access control (RBAC). For details, see the <a href="fabric-ontology-agent-governance-faq.html">Governance, privacy, and AI model FAQ</a>.</p>
 <h2 id="supported-data-sources">Supported data sources</h2>
 <table>
 <thead>
@@ -506,7 +510,7 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 </tr>
 <tr>
 <td><strong>Semantic model</strong></td>
-<td>Reads measures, tables, and relationships through XML for Analysis (XMLA) for business-context grounding. The agent doesn't bind ontology entities directly to semantic models.</td>
+<td>Reads measures, tables, columns, and relationships through XML for Analysis (XMLA) for business-context grounding; executes DAX queries against grounded semantic-model content. The agent doesn't bind ontology entities directly to semantic models during public preview.</td>
 </tr>
 <tr>
 <td><strong>GraphModel</strong></td>
@@ -518,7 +522,7 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 <p>The Fabric ontology agent is available in some of the Microsoft Fabric regions where the ontology item type is supported.</p>
 <div class="alert alert-note">
   <div class="alert-title">Note</div>
-  <div class="alert-body"><p>Some processing happens in geographically scoped Microsoft-managed environments rather than per region. For EU-based customers, processing and storage stay within the EU, in alignment with Microsoft's <a href="/privacy/eudb/eu-data-boundary-learn">EU Data Boundary</a> commitments.</p></div>
+  <div class="alert-body"><p>During public preview, data in transit might be processed outside the geography where your Microsoft Fabric capacity is located. The Fabric ontology agent doesn't maintain the <a href="https://learn.microsoft.com/privacy/eudb/eu-data-boundary-learn">EU Data Boundary</a> during public preview.</p></div>
 </div>
 
 <h2 id="current-limitations">Current limitations</h2>
@@ -552,6 +556,7 @@ See the <a href="https://azure.microsoft.com/support/legal/preview-supplemental-
 <li class="rail-h2"><a href="#plan-mode-and-act-mode">Plan mode and Act mode</a></li>
 <li class="rail-h2"><a href="#preview-the-draft-in-the-ontology-canvas">Preview the draft in the ontology canvas</a></li>
 <li class="rail-h2"><a href="#work-with-the-ontology-agent">Work with the ontology agent</a></li>
+<li class="rail-h3"><a href="#add-files-to-the-conversation">Add files to the conversation</a></li>
 <li class="rail-h3"><a href="#conversation-lifetime">Conversation lifetime</a></li>
 <li class="rail-h3"><a href="#data-retention">Data retention</a></li>
 <li class="rail-h2"><a href="#what-the-agent-can-access">What the agent can access</a></li>

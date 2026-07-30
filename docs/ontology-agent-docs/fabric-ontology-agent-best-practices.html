@@ -405,7 +405,7 @@ th {
 <li><a href="fabric-ontology-agent-billing.html">Billing &amp; cost management</a></li>
 </ul></nav>
     <main class="content">
-      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology Agent</a> <span class="sep">/</span> <span>Best practices</span></nav>
+      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology agent</a> <span class="sep">/</span> <span>Best practices</span></nav>
       <h1 class="page-title">Ontology agent best practices (preview) <span class="preview-badge">PREVIEW</span></h1>
       <p>The <a href="fabric-ontology-agent-overview.html">Microsoft Fabric ontology agent</a> builds, improves, and queries ontologies by reading the structure and sample data of your Fabric Lakehouses, Eventhouses, and semantic models. The agent gives better proposals when your workspace is organized. Easy-to-find sources and consistent ontology conventions improve the results.</p>
 <p>This article describes practices that help the agent generate accurate, grounded ontology drafts, patches, and queries that are ready to apply.</p>
@@ -416,6 +416,7 @@ th {
 <h3 id="keep-the-workspace-focused">Keep the workspace focused</h3>
 <p>Place the ontology item in the same workspace as the Lakehouses, Eventhouses, and semantic models you want it to model. The agent automatically explores items in the workspace where the ontology lives. If your data is scattered across many workspaces, the agent can only model the slice that lives alongside the ontology.</p>
 <p>If you must reuse data from another workspace, copy or shortcut it into the ontology's workspace before you start.</p>
+<p>If the workspace contains multiple unrelated business domains, decide whether the ontology should cover all of them, one primary domain, or a smaller subgroup. Tell the agent your choice before it drafts. If you change direction, state the new scope explicitly so the agent drops unrelated topics.</p>
 <h3 id="limit-clutter-in-the-workspace">Limit clutter in the workspace</h3>
 <p>The agent samples Lakehouses and Eventhouses to understand what's available. A workspace with many unrelated items makes the agent's initial discovery slower and noisier. Move experiments, archived items, and unrelated artifacts to a separate workspace so the agent focuses on what matters.</p>
 <h3 id="make-sure-you-have-permission-to-read-every-relevant-source">Make sure you have permission to read every relevant source</h3>
@@ -460,6 +461,9 @@ th {
 <p>When you switch to Act mode, the agent still tells you what it intends to apply before applying. Confirm the scope ("apply just these three changes" vs. "apply everything") and watch for the per-item status the agent streams back as it applies the changes.</p>
 <h3 id="give-the-agent-feedback-inside-the-conversation">Give the agent feedback inside the conversation</h3>
 <p>If a proposal looks wrong or low quality, say so in the chat, and say <em>why</em>. The agent uses your follow-up to refine its next turn. Specific feedback gets you to a good result faster than vague feedback. For example, tell the agent when it splits one entity type into two that share an ID. That detail helps more than a vague comment such as "this result is bad."</p>
+<h3 id="attach-focused-supporting-files">Attach focused supporting files</h3>
+<p>Attach business glossaries, data dictionaries, requirements, sample mappings, or schema notes when workspace metadata doesn't capture the business meaning. Use clear filenames and tell the agent what each file contributes to the request.</p>
+<p>Keep attachments focused. A conversation accepts up to 10 files, each no larger than 5 MB. Unrelated or duplicate files add context and can increase token consumption.</p>
 <h3 id="review-the-draft-preview-in-the-ontology-canvas">Review the draft preview in the ontology canvas</h3>
 <p>When the agent finishes a draft in Plan mode, it posts a preview action in its chat message. Open it: the Fabric ontology canvas renders a read-only preview of the proposed ontology, and it's the best surface for reviewing what the agent is about to do.</p>
 <ul>
@@ -495,6 +499,7 @@ th {
 <li class="rail-h3"><a href="#start-in-plan-mode">Start in Plan mode</a></li>
 <li class="rail-h3"><a href="#be-explicit-when-you-switch-to-act-mode">Be explicit when you switch to Act mode</a></li>
 <li class="rail-h3"><a href="#give-the-agent-feedback-inside-the-conversation">Give the agent feedback inside the conversation</a></li>
+<li class="rail-h3"><a href="#attach-focused-supporting-files">Attach focused supporting files</a></li>
 <li class="rail-h3"><a href="#review-the-draft-preview-in-the-ontology-canvas">Review the draft preview in the ontology canvas</a></li>
 <li class="rail-h2"><a href="#related-content">Related content</a></li>
   </ul>

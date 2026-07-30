@@ -405,7 +405,7 @@ th {
 <li class="active"><a href="fabric-ontology-agent-billing.html">Billing &amp; cost management</a></li>
 </ul></nav>
     <main class="content">
-      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology Agent</a> <span class="sep">/</span> <span>Billing &amp; cost management</span></nav>
+      <nav class="breadcrumbs" aria-label="breadcrumbs"><a href="https://learn.microsoft.com/fabric/">Microsoft Fabric</a> <span class="sep">/</span> <a href="index.html">Ontology agent</a> <span class="sep">/</span> <span>Billing &amp; cost management</span></nav>
       <h1 class="page-title">Ontology agent billing (preview) <span class="preview-badge">PREVIEW</span></h1>
       <p>The <a href="fabric-ontology-agent-overview.html">Microsoft Fabric ontology agent</a> uses generative AI to build, improve, and query ontologies over your Microsoft Fabric workspace data. Because the agent calls large language models (LLMs), usage incurs costs. This article describes how billing is planned and how to control spend.</p>
 <div class="alert alert-important">
@@ -426,7 +426,7 @@ th {
 <ul>
 <li><strong>Creating an ontology</strong>: clarification, discovery, drafting, validation, apply planning, and apply execution.</li>
 <li><strong>Improving an ontology</strong>: refreshing the agent's view of the current schema, patch construction, validation, apply planning, and apply execution.</li>
-<li><strong>Queries</strong>: The agent writes and executes queries in Kusto Query Language (KQL), SQL, and Graph Query Language (GQL).</li>
+<li><strong>Queries</strong>: The agent writes and executes queries in Data Analysis Expressions (DAX), Kusto Query Language (KQL), SQL, and Graph Query Language (GQL).</li>
 </ul>
 <p>The underlying Fabric services, not the ontology agent, bill for pure data storage such as the ontology definition, your Lakehouses, and your Eventhouses.</p>
 <h2 id="what-is-free-during-preview">What is free during preview</h2>
@@ -437,6 +437,7 @@ th {
 <li><strong>Be specific</strong>: Vague prompts cause longer reasoning loops and more tool calls. Specific prompts ("add a relationship between Flight and Gate using FlightId and GateId") complete in fewer turns.</li>
 <li><strong>Trust validation</strong>: Don't ask the agent to rerun validation repeatedly without changes; validation runs automatically before each apply.</li>
 <li><strong>Reuse evidence across turns</strong>: The agent caches discovery evidence within a conversation. Asking it to rediscover the same source repeatedly is wasted work.</li>
+<li><strong>Attach only relevant files</strong>: Long or unrelated files add context for the model to process and can increase token consumption.</li>
 <li><strong>Don't keep one long conversation alive</strong>: Conversations have a 24-hour limit anyway. Long conversations carry large context, which makes each turn more expensive.</li>
 </ul>
 <h2 id="cost-visibility">Cost visibility</h2>
