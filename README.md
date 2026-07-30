@@ -74,16 +74,15 @@ The ontology used by this solution is built and operated with the **Microsoft Fa
 
 **What the agent does** — Grounds an ontology in your workspace data by defining *entity types*, *relationships*, *data bindings*, and *contextualizations*, then lets you query it in plain language (auto-selecting **KQL** for Eventhouse tables, **SQL** for Lakehouse tables, and **GQL** for graph traversals). It runs a guided **Discover → Draft → Validate → Apply** flow, previews every change in the ontology canvas, and uses your own identity (delegated access) so it can only read/write what your Entra ID + Fabric RBAC already allow. A **Plan mode** (safe, read-only, default) vs **Act mode** (applies changes) toggle keeps you in control.
 
-**Documentation pages** (local copies):
+**HTML documentation** (local copies):
 
-| Page | Summary |
-|---|---|
-| 📖 [Overview](docs/ontology-agent-docs/fabric-ontology-agent-overview.html) | What an ontology is, how to create one with the agent, the Plan/Act modes, the draft-preview canvas, supported data sources (Lakehouse, Eventhouse, semantic model, GraphModel), regions, and current preview limitations. |
-| ✅ [Best practices](docs/ontology-agent-docs/fabric-ontology-agent-best-practices.html) | A 4-phase guide to prepare for accurate results: organize your workspace, prepare data sources, follow ontology design conventions, and work effectively with the agent. |
-| 🛡️ [Responsible AI FAQ](docs/ontology-agent-docs/fabric-ontology-agent-responsible-use.html) | Reliability of results, how the agent uses and collects data, fairness considerations, handling unexpected content, and recommended human-in-the-loop workflow integration. |
-| 🔐 [Governance & privacy FAQ](docs/ontology-agent-docs/fabric-ontology-agent-governance-faq.html) | Data & privacy, compliance and data residency (incl. EU Data Boundary), model and data usage (no foundation-model training on your data), reliability/safety, and access control. |
-| 🧰 [Troubleshooting](docs/ontology-agent-docs/fabric-ontology-agent-troubleshooting.html) | Fixes for common authorization/access, ontology creation, existing-ontology, Plan/Act mode, and AI/model issues, plus where to get more help. |
-| 💲 [Billing & cost management](docs/ontology-agent-docs/fabric-ontology-agent-billing.html) | Consumption-based billing backed by Fabric capacity, what incurs cost (create / improve / query operations), what's free during preview, and tips to manage spend. |
+- 🗂️ [Ontology agent documentation index](docs/ontology-agent-docs/index.html)
+   - 📖 [Overview](docs/ontology-agent-docs/fabric-ontology-agent-overview.html) — What an ontology is, how to create one with the agent, the Plan/Act modes, the draft-preview canvas, supported data sources (Lakehouse, Eventhouse, semantic model, GraphModel), regions, and current preview limitations.
+   - ✅ [Best practices](docs/ontology-agent-docs/fabric-ontology-agent-best-practices.html) — A 4-phase guide to prepare for accurate results: organize your workspace, prepare data sources, follow ontology design conventions, and work effectively with the agent.
+   - 🛡️ [Responsible AI FAQ](docs/ontology-agent-docs/fabric-ontology-agent-responsible-use.html) — Reliability of results, how the agent uses and collects data, fairness considerations, handling unexpected content, and recommended human-in-the-loop workflow integration.
+   - 🔐 [Governance & privacy FAQ](docs/ontology-agent-docs/fabric-ontology-agent-governance-faq.html) — Data & privacy, compliance and data residency (incl. EU Data Boundary), model and data usage (no foundation-model training on your data), reliability/safety, and access control.
+   - 🧰 [Troubleshooting](docs/ontology-agent-docs/fabric-ontology-agent-troubleshooting.html) — Fixes for common authorization/access, ontology creation, existing-ontology, Plan/Act mode, and AI/model issues, plus where to get more help.
+   - 💲 [Billing & cost management](docs/ontology-agent-docs/fabric-ontology-agent-billing.html) — Consumption-based billing backed by Fabric capacity, what incurs cost (create / improve / query operations), what's free during preview, and tips to manage spend.
 
 **Useful links:**
 
